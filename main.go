@@ -38,8 +38,24 @@ func main() {
 				for _, version := range node.GetAllLTSVersions() {
 					println(version)
 				}
+			} else if os.Args[2] == "installed" {
+				for _, version := range node.GetInstalledVersions() {
+					println(version)
+				}
 			} else {
 				panic("Invalid list type")
+			}
+		} else if os.Args[1] == "uninstall" {
+			if os.Args[2] == "all" {
+				node.UninstallAll()
+			} else if os.Args[2] == "lts" {
+				node.UninstallAllLTS()
+			} else if os.Args[2] == "latest" {
+				node.UninstallLatest()
+			} else if os.Args[2] != "" {
+				node.UninstallSpecific(os.Args[2])
+			} else {
+				panic("Invalid version")
 			}
 		} else {
 			panic("Invalid command")

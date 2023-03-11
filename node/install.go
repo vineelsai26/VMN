@@ -12,43 +12,41 @@ import (
 	"strings"
 )
 
-func GetDestination(version string) string {
-	home, err := os.UserHomeDir()
-	if err != nil {
-		panic(err)
-	}
-	return filepath.Join(home, ".vmn", "node", version)
-}
-
-func GetDownloadURL(version string) string {
+func GetDownloadURL(version string) (string, error) {
 	if runtime.GOOS == "windows" {
 		if runtime.GOARCH == "amd64" {
-			return "https://nodejs.org/dist/" + version + "/node-" + version + "-win-x64.zip"
+			return "https://nodejs.org/dist/" + version + "/node-" + version + "-win-x64.zip", nil
 		} else if runtime.GOARCH == "386" {
-			return "https://nodejs.org/dist/" + version + "/node-" + version + "-win-x86.zip"
+			return "https://nodejs.org/dist/" + version + "/node-" + version + "-win-x86.zip", nil
+		} else {
+			return "", fmt.Errorf("unsupported os or architecture")
 		}
 	} else if runtime.GOOS == "linux" {
 		if runtime.GOARCH == "amd64" {
-			return "https://nodejs.org/dist/" + version + "/node-" + version + "-linux-x64.tar.gz"
+			return "https://nodejs.org/dist/" + version + "/node-" + version + "-linux-x64.tar.gz", nil
 		} else if runtime.GOARCH == "386" {
-			return "https://nodejs.org/dist/" + version + "/node-" + version + "-linux-x86.tar.gz"
+			return "https://nodejs.org/dist/" + version + "/node-" + version + "-linux-x86.tar.gz", nil
 		} else if runtime.GOARCH == "arm64" {
-			return "https://nodejs.org/dist/" + version + "/node-" + version + "-linux-arm64.tar.gz"
+			return "https://nodejs.org/dist/" + version + "/node-" + version + "-linux-arm64.tar.gz", nil
+		} else {
+			return "", fmt.Errorf("unsupported os or architecture")
 		}
 	} else if runtime.GOOS == "darwin" {
 		if runtime.GOARCH == "amd64" {
-			return "https://nodejs.org/dist/" + version + "/node-" + version + "-darwin-x64.tar.gz"
+			return "https://nodejs.org/dist/" + version + "/node-" + version + "-darwin-x64.tar.gz", nil
 		} else if runtime.GOARCH == "arm64" {
-			return "https://nodejs.org/dist/" + version + "/node-" + version + "-darwin-arm64.tar.gz"
+			return "https://nodejs.org/dist/" + version + "/node-" + version + "-darwin-arm64.tar.gz", nil
+		} else {
+			return "", fmt.Errorf("unsupported os or architecture")
 		}
 	}
-	return ""
+	return "", fmt.Errorf("unsupported os or architecture")
 }
 
 func Download(version string) (string, error) {
-	fullURLFile := GetDownloadURL(version)
-	if fullURLFile == "" {
-		return "", fmt.Errorf("unsupported os or architecture")
+	fullURLFile, err := GetDownloadURL(version)
+	if err != nil {
+		return "", err
 	}
 
 	fileURL, err := url.Parse(fullURLFile)
@@ -152,20 +150,21 @@ func Unzip(src, dest string) error {
 }
 
 func Install(version string) {
+	// Download file
 	fmt.Println("Downloading Node.js version " + version + "...")
 	fileName, err := Download(version)
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println("Installing Node.js version " + version + "...")
 	// Unzip file
+	fmt.Println("Installing Node.js version " + version + "...")
 	if err := Unzip(fileName, GetDestination(version)); err != nil {
 		panic(err)
 	}
 
-	fmt.Println("Cleaning up...")
 	// Delete file
+	fmt.Println("Cleaning up...")
 	if err := os.Remove(fileName); err != nil {
 		panic(err)
 	}

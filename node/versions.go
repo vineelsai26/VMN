@@ -39,26 +39,6 @@ func GetLatestLTSVersion() string {
 	return ""
 }
 
-func GetAllVersions() []string {
-	versions := getVersions()
-	var allVersions []string
-	for _, version := range versions {
-		allVersions = append(allVersions, version["version"].(string))
-	}
-	return allVersions
-}
-
-func GetAllLTSVersions() []string {
-	versions := getVersions()
-	var ltsVersions []string
-	for _, version := range versions {
-		if version["lts"] != nil && version["lts"] != false && version["lts"] != "" {
-			ltsVersions = append(ltsVersions, version["version"].(string))
-		}
-	}
-	return ltsVersions
-}
-
 func GetLatestVersionOfVersion(major string) string {
 	versions := getVersions()
 	for _, version := range versions {

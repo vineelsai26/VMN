@@ -11,17 +11,6 @@ import (
 	"golang.org/x/sys/windows/registry"
 )
 
-func GetVersionPath(version string) string {
-	if runtime.GOOS == "windows" {
-		return GetDestination(version)
-	} else if runtime.GOOS == "linux" {
-		return filepath.Join(GetDestination(version), "bin")
-	} else if runtime.GOOS == "darwin" {
-		return filepath.Join(GetDestination(version), "bin")
-	}
-	return ""
-}
-
 func SetPath(path string) {
 	if runtime.GOOS == "windows" {
 		k, err := registry.OpenKey(registry.CURRENT_USER, `Environment`, registry.QUERY_VALUE)
@@ -61,12 +50,9 @@ func SetPath(path string) {
 	} else if runtime.GOOS == "linux" || runtime.GOOS == "darwin" {
 		exec.Command("export", "VMN_VERSION="+path).Run()
 
-		home, err := os.UserHomeDir()
-		if err != nil {
-			panic(err)
-		}
-
 		shells := []string{".bashrc", ".zshrc"}
+
+		home := GetHome()
 
 		for _, shell := range shells {
 			if _, err := os.Stat(filepath.Join(home, shell)); err == nil {
@@ -98,18 +84,12 @@ func SetPath(path string) {
 }
 
 func Use(version string) {
-	path := GetVersionPath(version)
-	if path == "" {
-		fmt.Println("Unsupported OS or architecture")
-		return
-	}
-
-	home, err := os.UserHomeDir()
+	path, err := GetVersionPath(version)
 	if err != nil {
 		panic(err)
 	}
 
-	f, err := os.OpenFile(filepath.Join(home, ".vmn", "current"), os.O_RDWR|os.O_CREATE, 0755)
+	f, err := os.OpenFile(filepath.Join(GetHome(), ".vmn", "current"), os.O_RDWR|os.O_CREATE, 0755)
 	if err != nil {
 		panic(err)
 	}
