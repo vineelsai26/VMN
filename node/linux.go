@@ -33,12 +33,29 @@ func SetPathLinux(path string) {
 				if err != nil {
 					panic(err)
 				}
-				if !strings.Contains(string(b[:n]), "export PATH=$VMN_VERSION:$PATH") {
-					exec.Command("echo", "export PATH=$VMN_VERSION:$PATH", ">>", filepath.Join(home, shell)).Run()
+
+				if !strings.Contains(string(b[:n]), "export VMN_VERSION=`cat "+filepath.Join(home, ".vmn", "current")+"`") {
+					file, err := os.OpenFile(filepath.Join(home, shell), os.O_APPEND|os.O_WRONLY, 0644)
+					if err != nil {
+						panic(err)
+					}
+					defer file.Close()
+
+					if _, err := file.WriteString("export VMN_VERSION=`cat " + filepath.Join(home, ".vmn", "current") + "`\n"); err != nil {
+						panic(err)
+					}
 				}
 
-				if !strings.Contains(string(b[:n]), "export VMN_VERSION=${cat "+filepath.Join(home, ".vmn", "current")+"}") {
-					exec.Command("echo", "export VMN_VERSION=${cat "+filepath.Join(home, ".vmn", "current")+"}", ">>", filepath.Join(home, shell)).Run()
+				if !strings.Contains(string(b[:n]), "export PATH=$VMN_VERSION:$PATH") {
+					file, err := os.OpenFile(filepath.Join(home, shell), os.O_APPEND|os.O_WRONLY, 0644)
+					if err != nil {
+						panic(err)
+					}
+					defer file.Close()
+
+					if _, err := file.WriteString("export PATH=$VMN_VERSION:$PATH\n"); err != nil {
+						panic(err)
+					}
 				}
 			}
 		}

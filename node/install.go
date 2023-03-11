@@ -1,7 +1,9 @@
 package node
 
 import (
+	"archive/tar"
 	"archive/zip"
+	"compress/gzip"
 	"fmt"
 	"io"
 	"net/http"
@@ -85,7 +87,7 @@ func Download(version string) (string, error) {
 	return fileName, nil
 }
 
-func Unzip(src, dest string) error {
+func Unzip(src string, dest string) error {
 	r, err := zip.OpenReader(src)
 	if err != nil {
 		return err
@@ -149,6 +151,71 @@ func Unzip(src, dest string) error {
 	return nil
 }
 
+func Untar(src string, dest string) error {
+	r, err := os.Open(src)
+	if err != nil {
+		return err
+	}
+
+	gzr, err := gzip.NewReader(r)
+	if err != nil {
+		return err
+	}
+	defer gzr.Close()
+
+	tr := tar.NewReader(gzr)
+
+	for {
+		header, err := tr.Next()
+
+		switch {
+
+		// if no more files are found return
+		case err == io.EOF:
+			return nil
+
+		// return any other error
+		case err != nil:
+			return err
+
+		// if the header is nil, just skip it (not sure how this happens)
+		case header == nil:
+			continue
+		}
+
+		// the target location where the dir/file should be created
+		target := filepath.Join(dest, strings.Join(strings.Split(header.Name, "/")[1:], "/"))
+
+		// check the file type
+		switch header.Typeflag {
+
+		// if its a dir and it doesn't exist create it
+		case tar.TypeDir:
+			if _, err := os.Stat(target); err != nil {
+				if err := os.MkdirAll(target, 0755); err != nil {
+					return err
+				}
+			}
+
+		// if it's a file create it
+		case tar.TypeReg:
+			f, err := os.OpenFile(target, os.O_CREATE|os.O_RDWR, os.FileMode(header.Mode))
+			if err != nil {
+				return err
+			}
+
+			// copy over contents
+			if _, err := io.Copy(f, tr); err != nil {
+				return err
+			}
+
+			// manually close here after each file operation; defering would cause each file close
+			// to wait until all operations have completed.
+			f.Close()
+		}
+	}
+}
+
 func Install(version string) {
 	// Download file
 	fmt.Println("Downloading Node.js version " + version + "...")
@@ -159,8 +226,14 @@ func Install(version string) {
 
 	// Unzip file
 	fmt.Println("Installing Node.js version " + version + "...")
-	if err := Unzip(fileName, GetDestination(version)); err != nil {
-		panic(err)
+	if strings.HasSuffix(fileName, ".zip") {
+		if err := Unzip(fileName, GetDestination(version)); err != nil {
+			panic(err)
+		}
+	} else if strings.HasSuffix(fileName, ".tar.gz") {
+		if err := Untar(fileName, GetDestination(version)); err != nil {
+			panic(err)
+		}
 	}
 
 	// Delete file
