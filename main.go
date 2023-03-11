@@ -17,10 +17,9 @@ func main() {
 			} else if _, err := strconv.Atoi(os.Args[2]); err == nil {
 				node.InstallSpecific(os.Args[2])
 			} else {
-				node.InstallLatest()
+				panic("Invalid version")
 			}
-		}
-		if os.Args[1] == "use" {
+		} else if os.Args[1] == "use" {
 			if os.Args[2] == "latest" {
 				node.UseLatest()
 			} else if os.Args[2] == "lts" {
@@ -28,23 +27,22 @@ func main() {
 			} else if _, err := strconv.Atoi(os.Args[2]); err == nil {
 				node.UseSpecific(os.Args[2])
 			} else {
-				node.UseLatest()
+				panic("Invalid version")
 			}
-		}
-		// if os.Args[1] == "uninstall" {
-
-		// }
-		if os.Args[1] == "list" {
+		} else if os.Args[1] == "list" {
 			if os.Args[2] == "all" {
 				for _, version := range node.GetAllVersions() {
 					println(version)
 				}
-			}
-			if os.Args[2] == "lts" {
+			} else if os.Args[2] == "lts" {
 				for _, version := range node.GetAllLTSVersions() {
 					println(version)
 				}
+			} else {
+				panic("Invalid list type")
 			}
+		} else {
+			panic("Invalid command")
 		}
 	}
 }
