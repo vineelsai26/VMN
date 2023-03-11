@@ -3,81 +3,15 @@ package node
 import (
 	"fmt"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"runtime"
-	"strings"
-
-	"golang.org/x/sys/windows/registry"
 )
 
 func SetPath(path string) {
 	if runtime.GOOS == "windows" {
-		k, err := registry.OpenKey(registry.CURRENT_USER, `Environment`, registry.QUERY_VALUE)
-		if err != nil {
-			panic(err)
-		}
-		defer k.Close()
-
-		userPath, _, err := k.GetStringValue("Path")
-		if err != nil {
-			panic(err)
-		}
-
-		out, err := exec.Command("setx", "VMN_VERSION", path).Output()
-		if err != nil {
-			panic(err)
-		}
-
-		fmt.Println(string(out))
-
-		var isPathVariableExists bool = false
-
-		for _, env := range strings.Split(userPath, ";") {
-			if env == "%VMN_VERSION%" {
-				isPathVariableExists = true
-				return
-			}
-		}
-
-		if !isPathVariableExists {
-			out, err = exec.Command("setx", "PATH", "%VMN_VERSION%;"+userPath).Output()
-			if err != nil {
-				panic(err)
-			}
-			fmt.Println(string(out))
-		}
+		SetPathWindows(path)
 	} else if runtime.GOOS == "linux" || runtime.GOOS == "darwin" {
-		exec.Command("export", "VMN_VERSION="+path).Run()
-
-		shells := []string{".bashrc", ".zshrc"}
-
-		home := GetHome()
-
-		for _, shell := range shells {
-			if _, err := os.Stat(filepath.Join(home, shell)); err == nil {
-				f, err := os.OpenFile(filepath.Join(home, shell), os.O_RDONLY, 0644)
-				if err != nil {
-					panic(err)
-				}
-				defer f.Close()
-
-				if _, err := f.Stat(); err == nil {
-					b := make([]byte, 1024)
-					n, err := f.Read(b)
-					if err != nil {
-						panic(err)
-					}
-					if !strings.Contains(string(b[:n]), "export PATH=$VMN_VERSION:$PATH") {
-						exec.Command("echo", "export PATH=$VMN_VERSION:$PATH", ">>", filepath.Join(home, shell)).Run()
-					}
-
-					if !strings.Contains(string(b[:n]), "export VMN_VERSION=${cat "+filepath.Join(home, ".vmn", "current")+"}") {
-						exec.Command("echo", "export VMN_VERSION=${cat "+filepath.Join(home, ".vmn", "current")+"}", ">>", filepath.Join(home, shell)).Run()
-					}
-				}
-			}
-		}
+		SetPathLinux(path)
 	} else {
 		fmt.Println("Not implemented for this OS")
 	}
