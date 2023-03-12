@@ -48,3 +48,4 @@ jobs:
         prerelease: false
         files: |
           *.tar.gz
+          *.zip
