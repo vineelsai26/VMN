@@ -35,11 +35,39 @@ jobs:
         # Linux AMD64
         env GOOS=linux GOARCH=amd64 go build
         tar -czvf vmn-linux-amd64.tar.gz vmn
+
+        # Debian AMD64
+        mkdir -p package/vmn-debian/usr/bin
+        mkdir -p package/vmn-debian/DEBIAN
+        cp vmn package/vmn-debian/usr/bin
+        release=$(echo "${{ github.event.release.tag_name }}" | awk '{gsub("v",""); print}')
+        printf "Package: vmn\nVersion: $release\nSection: custom\nPriority: optional\nArchitecture: amd64\nMaintainer: Vineel Sai\nDescription: Version Manager for Node\nHomepage: https://vineelsai.com\n" > package/vmn-debian/DEBIAN/control
+        dpkg-deb --build package/vmn-debian vmn-linux-amd64.deb
+        rm -rf package
         go clean
 
         # Linux ARM64
         env GOOS=linux GOARCH=arm64 go build
         tar -czvf vmn-linux-arm64.tar.gz vmn
+
+        # Debian ARM64
+        mkdir -p package/vmn-debian/usr/bin
+        mkdir -p package/vmn-debian/DEBIAN
+        cp vmn package/vmn-debian/usr/bin
+        release=$(echo "${{ github.event.release.tag_name }}" | awk '{gsub("v",""); print}')
+        printf "Package: vmn\nVersion: $release\nSection: custom\nPriority: optional\nArchitecture: arm64\nMaintainer: Vineel Sai\nDescription: Version Manager for Node\nHomepage: https://vineelsai.com\n" > package/vmn-debian/DEBIAN/control
+        dpkg-deb --build package/vmn-debian vmn-linux-arm64.deb
+        rm -rf package
+        go clean
+
+        # MacOS AMD64
+        env GOOS=darwin GOARCH=amd64 go build
+        tar -czvf vmn-macos-amd64.tar.gz vmn
+        go clean
+
+        # MacOS ARM64
+        env GOOS=darwin GOARCH=arm64 go build
+        tar -czvf vmn-macos-arm64.tar.gz vmn
         go clean
 
     - uses: "marvinpinto/action-automatic-releases@latest"
