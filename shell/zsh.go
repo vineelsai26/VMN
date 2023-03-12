@@ -4,6 +4,8 @@ import "fmt"
 
 func SetEnvForZSH() {
 	fmt.Println(`
+export PATH="$(cat $HOME/.vmn/current):$PATH"
+
 cd() {
 	builtin cd "$@"
 	if [ -f .vmnrc ]; then

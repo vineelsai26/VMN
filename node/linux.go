@@ -28,35 +28,24 @@ func SetPathLinux(path string) {
 			defer f.Close()
 
 			if _, err := f.Stat(); err == nil {
-				b := make([]byte, 1024)
+				b := make([]byte, 1024*1024)
 				n, err := f.Read(b)
 				if err != nil {
 					panic(err)
 				}
 
-				if !strings.Contains(string(b[:n]), "export VMN_VERSION=`cat "+filepath.Join(home, ".vmn", "current")+"`") {
+				if !strings.Contains(string(b[:n]), "eval \"`vmn env`\"") {
 					file, err := os.OpenFile(filepath.Join(home, shell), os.O_APPEND|os.O_WRONLY, 0644)
 					if err != nil {
 						panic(err)
 					}
 					defer file.Close()
 
-					if _, err := file.WriteString("export VMN_VERSION=`cat " + filepath.Join(home, ".vmn", "current") + "`\n"); err != nil {
+					if _, err := file.WriteString("\n#VMN \neval \"`vmn env`\""); err != nil {
 						panic(err)
 					}
 				}
 
-				if !strings.Contains(string(b[:n]), "export PATH=$VMN_VERSION:$PATH") {
-					file, err := os.OpenFile(filepath.Join(home, shell), os.O_APPEND|os.O_WRONLY, 0644)
-					if err != nil {
-						panic(err)
-					}
-					defer file.Close()
-
-					if _, err := file.WriteString("export PATH=$VMN_VERSION:$PATH\n"); err != nil {
-						panic(err)
-					}
-				}
 			}
 		}
 	}
