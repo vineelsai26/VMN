@@ -44,5 +44,5 @@ if [ -f .node-version ]; then
 	export PATH="$HOME/.vmn/node/$(cat .node-version)/bin:$PATH"
 	echo "Using node version $(node --version)"
 fi
-		`)
+	`)
 }
