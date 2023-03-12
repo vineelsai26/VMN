@@ -79,3 +79,4 @@ jobs:
           files: |
             *.tar.gz
             *.zip
+            *.deb
