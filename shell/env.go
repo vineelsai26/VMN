@@ -7,7 +7,7 @@ import (
 
 func PrintEnv() {
 	if runtime.GOOS == "linux" || runtime.GOOS == "darwin" {
-		fmt.Println("eval vmn env `ps -p $$ -o comm=`")
+		fmt.Println("eval \"SHELL=`ps -p $$ -o comm=`; `vmn env $SHELL`\"")
 	} else if runtime.GOOS == "windows" {
 		fmt.Println("vmn env powershell | Out-String | Invoke-Expression")
 	} else {
