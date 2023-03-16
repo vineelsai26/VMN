@@ -25,17 +25,17 @@ jobs:
           tag: ${{ github.ref_name }}
         run: |
           # Windows AMD64
-          env GOOS=windows GOARCH=amd64 go build
+          env GOOS=windows GOARCH=amd64 go build -ldflags="-X 'vineelsai.com/vmn/version.Version=$tag'"
           zip vmn-windows-amd64.zip vmn.exe
           go clean
 
           # Windows ARM64
-          env GOOS=windows GOARCH=arm64 go build
+          env GOOS=windows GOARCH=arm64 go build -ldflags="-X 'vineelsai.com/vmn/version.Version=$tag'"
           zip vmn-windows-arm64.zip vmn.exe
           go clean
 
           # Linux AMD64
-          env GOOS=linux GOARCH=amd64 go build
+          env GOOS=linux GOARCH=amd64 go build -ldflags="-X 'vineelsai.com/vmn/version.Version=$tag'"
           tar -czvf vmn-linux-amd64.tar.gz vmn
 
           # Debian AMD64
@@ -49,7 +49,7 @@ jobs:
           go clean
 
           # Linux ARM64
-          env GOOS=linux GOARCH=arm64 go build
+          env GOOS=linux GOARCH=arm64 go build -ldflags="-X 'vineelsai.com/vmn/version.Version=$tag'"
           tar -czvf vmn-linux-arm64.tar.gz vmn
 
           # Debian ARM64
@@ -63,12 +63,12 @@ jobs:
           go clean
 
           # MacOS AMD64
-          env GOOS=darwin GOARCH=amd64 go build
+          env GOOS=darwin GOARCH=amd64 go build -ldflags="-X 'vineelsai.com/vmn/version.Version=$tag'"
           tar -czvf vmn-macos-amd64.tar.gz vmn
           go clean
 
           # MacOS ARM64
-          env GOOS=darwin GOARCH=arm64 go build
+          env GOOS=darwin GOARCH=arm64 go build -ldflags="-X 'vineelsai.com/vmn/version.Version=$tag'"
           tar -czvf vmn-macos-arm64.tar.gz vmn
           go clean
 
