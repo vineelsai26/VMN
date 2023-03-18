@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"vineelsai.com/vmn/node"
+	"vineelsai.com/vmn/setup"
 	"vineelsai.com/vmn/shell"
 	"vineelsai.com/vmn/version"
 )
@@ -115,6 +116,8 @@ func main() {
 			help()
 		} else if os.Args[1] == "version" {
 			version.GetVersion()
+		} else if os.Args[1] == "setup" {
+			setup.Install()
 		} else {
 			panic("Invalid command")
 		}
