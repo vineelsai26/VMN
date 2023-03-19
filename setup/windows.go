@@ -26,6 +26,12 @@ func Install() {
 	}
 	defer srcFile.Close()
 
+	if _, err := os.Stat(filepath.Join(node.GetHome(), ".vmn")); os.IsNotExist(err) {
+		if err := os.MkdirAll(filepath.Join(node.GetHome(), ".vmn"), 0755); err != nil {
+			panic(err)
+		}
+	}
+
 	destFile, err := os.Create(filepath.Join(node.GetHome(), ".vmn", "vmn.exe"))
 	if err != nil {
 		panic(err)

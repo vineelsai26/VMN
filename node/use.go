@@ -23,6 +23,12 @@ func Use(version string) {
 		panic(err)
 	}
 
+	if _, err := os.Stat(filepath.Join(GetHome(), ".vmn")); os.IsNotExist(err) {
+		if err := os.MkdirAll(filepath.Join(GetHome(), ".vmn"), 0755); err != nil {
+			panic(err)
+		}
+	}
+
 	f, err := os.OpenFile(filepath.Join(GetHome(), ".vmn", "current"), os.O_RDWR|os.O_CREATE, 0755)
 	if err != nil {
 		panic(err)
