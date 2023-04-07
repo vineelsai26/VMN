@@ -122,6 +122,6 @@ func main() {
 			panic("Invalid command")
 		}
 	} else {
-		panic("Invalid command")
+		help()
 	}
 }
