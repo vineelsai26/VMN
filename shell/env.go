@@ -9,7 +9,7 @@ func PrintEnv() {
 	if runtime.GOOS == "linux" {
 		fmt.Println("eval \"SHELL=`ps -p $$ -o comm=`; `vmn env $SHELL`\"")
 	} else if runtime.GOOS == "darwin" {
-		fmt.Println("eval \"SHELL=`ps -p $$ -o comm=`; `vmn env $SHELL`\"")
+		fmt.Println("eval \"`vmn env zsh`\"")
 	} else if runtime.GOOS == "windows" {
 		fmt.Println("vmn env powershell | Out-String | Invoke-Expression")
 	} else {
@@ -18,7 +18,7 @@ func PrintEnv() {
 }
 
 func RunShellSpecificCommands(args []string) {
-	if args[2] == "zsh" || args[2] == "-zsh" {
+	if args[2] == "zsh" {
 		SetEnvForZSH()
 	} else if args[2] == "bash" {
 		SetEnvForBash()

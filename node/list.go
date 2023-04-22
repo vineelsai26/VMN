@@ -1,5 +1,9 @@
 package node
 
+import (
+	"vineelsai.com/vmn/utils"
+)
+
 func GetAllVersions() []string {
 	versions := getVersions()
 	var allVersions []string
@@ -23,7 +27,7 @@ func GetAllLTSVersions() []string {
 func GetInstalledVersions() []string {
 	var installedVersions []string
 	for _, version := range GetAllVersions() {
-		if IsInstalled(version) {
+		if utils.IsInstalled(version) {
 			installedVersions = append(installedVersions, version)
 		}
 	}
