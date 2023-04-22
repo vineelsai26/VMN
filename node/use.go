@@ -5,31 +5,32 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+
+	"vineelsai.com/vmn/location"
+	"vineelsai.com/vmn/utils"
 )
 
 func SetPath(path string) {
-	if runtime.GOOS == "windows" {
-		SetPathWindows(path)
-	} else if runtime.GOOS == "linux" || runtime.GOOS == "darwin" {
-		SetPathLinux(path)
+	if runtime.GOOS == "windows" || runtime.GOOS == "linux" || runtime.GOOS == "darwin" {
+		location.Set(path)
 	} else {
 		fmt.Println("Not implemented for this OS")
 	}
 }
 
 func Use(version string) {
-	path, err := GetVersionPath(version)
+	path, err := utils.GetVersionPath(version)
 	if err != nil {
 		panic(err)
 	}
 
-	if _, err := os.Stat(filepath.Join(GetHome(), ".vmn")); os.IsNotExist(err) {
-		if err := os.MkdirAll(filepath.Join(GetHome(), ".vmn"), 0755); err != nil {
+	if _, err := os.Stat(filepath.Join(utils.GetHome(), ".vmn")); os.IsNotExist(err) {
+		if err := os.MkdirAll(filepath.Join(utils.GetHome(), ".vmn"), 0755); err != nil {
 			panic(err)
 		}
 	}
 
-	f, err := os.OpenFile(filepath.Join(GetHome(), ".vmn", "current"), os.O_RDWR|os.O_CREATE, 0755)
+	f, err := os.OpenFile(filepath.Join(utils.GetHome(), ".vmn", "current"), os.O_RDWR|os.O_CREATE, 0755)
 	if err != nil {
 		panic(err)
 	}

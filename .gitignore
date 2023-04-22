@@ -1,3 +1,4 @@
 *.exe
 vmn
 package
+.DS_Store

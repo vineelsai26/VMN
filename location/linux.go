@@ -1,23 +1,23 @@
 //go:build linux || darwin
 // +build linux darwin
 
-package node
+package location
 
 import (
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
+
+	"vineelsai.com/vmn/utils"
 )
 
-func SetPathWindows(path string) {}
-
-func SetPathLinux(path string) {
+func Set(path string) {
 	exec.Command("export", "VMN_VERSION="+path).Run()
 
 	shells := []string{".bashrc", ".zshrc"}
 
-	home := GetHome()
+	home := utils.GetHome()
 
 	for _, shell := range shells {
 		if _, err := os.Stat(filepath.Join(home, shell)); err == nil {

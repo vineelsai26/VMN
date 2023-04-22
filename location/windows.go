@@ -1,7 +1,7 @@
 //go:build !linux && !darwin
 // +build !linux,!darwin
 
-package node
+package location
 
 import (
 	"fmt"
@@ -13,7 +13,7 @@ import (
 	"golang.org/x/sys/windows/registry"
 )
 
-func SetPathWindows(path string) {
+func Set(path string) {
 	k, err := registry.OpenKey(registry.CURRENT_USER, `Environment`, registry.QUERY_VALUE)
 	if err != nil {
 		panic(err)
@@ -83,5 +83,3 @@ func SetPathWindows(path string) {
 	}
 
 }
-
-func SetPathLinux(path string) {}

@@ -6,7 +6,7 @@ import (
 	"runtime"
 	"strings"
 
-	"vineelsai.com/vmn/tools"
+	"vineelsai.com/vmn/utils"
 )
 
 func GetDownloadURL(version string) (string, error) {
@@ -49,7 +49,7 @@ func Install(version string) {
 		panic(err)
 	}
 
-	fileName, err := tools.Download(fullURLFile)
+	fileName, err := utils.Download(fullURLFile)
 	if err != nil {
 		panic(err)
 	}
@@ -57,11 +57,11 @@ func Install(version string) {
 	// Unzip file
 	fmt.Println("Installing Node.js version " + version + "...")
 	if strings.HasSuffix(fileName, ".zip") {
-		if err := tools.Unzip(fileName, GetDestination(version)); err != nil {
+		if err := utils.Unzip(fileName, utils.GetDestination(version)); err != nil {
 			panic(err)
 		}
 	} else if strings.HasSuffix(fileName, ".tar.gz") {
-		if err := tools.Untar(fileName, GetDestination(version)); err != nil {
+		if err := utils.Untar(fileName, utils.GetDestination(version)); err != nil {
 			panic(err)
 		}
 	}

@@ -3,6 +3,8 @@ package node
 import (
 	"fmt"
 	"os"
+
+	"vineelsai.com/vmn/utils"
 )
 
 func UninstallAll() {
@@ -22,14 +24,14 @@ func UninstallAllLTS() {
 }
 
 func UninstallSpecific(version string) {
-	if IsInstalled(version) {
+	if utils.IsInstalled(version) {
 		Uninstall(version)
 	}
 }
 
 func Uninstall(version string) {
 	fmt.Printf("Uninstalling Node.js %s\n", version)
-	path, err := GetVersionPath(version)
+	path, err := utils.GetVersionPath(version)
 	if err != nil {
 		panic(err)
 	}
