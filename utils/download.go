@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -18,12 +19,6 @@ func Download(fullURLFile string) (string, error) {
 	segments := strings.Split(path, "/")
 	fileName := segments[len(segments)-1]
 
-	// Create blank file
-	file, err := os.Create(fileName)
-	if err != nil {
-		return "", err
-	}
-
 	client := http.Client{
 		CheckRedirect: func(r *http.Request, via []*http.Request) error {
 			r.URL.Opaque = r.URL.Path
@@ -36,7 +31,18 @@ func Download(fullURLFile string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("bad status: %s, Unable to download the file make sure the specified version or architecture is available", resp.Status)
+	}
+
 	defer resp.Body.Close()
+
+	// Create blank file
+	file, err := os.Create(fileName)
+	if err != nil {
+		return "", err
+	}
 
 	io.Copy(file, resp.Body)
 

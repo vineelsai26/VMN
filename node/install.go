@@ -29,7 +29,9 @@ func GetDownloadURL(version string) (string, error) {
 			return "", fmt.Errorf("unsupported os or architecture")
 		}
 	} else if runtime.GOOS == "darwin" {
-		if runtime.GOARCH == "amd64" {
+		if os.Getenv("VMN_USE_ROSETTA") == "true" {
+			return "https://nodejs.org/dist/" + version + "/node-" + version + "-darwin-x64.tar.gz", nil
+		} else if runtime.GOARCH == "amd64" {
 			return "https://nodejs.org/dist/" + version + "/node-" + version + "-darwin-x64.tar.gz", nil
 		} else if runtime.GOARCH == "arm64" {
 			return "https://nodejs.org/dist/" + version + "/node-" + version + "-darwin-arm64.tar.gz", nil
