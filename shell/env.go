@@ -18,10 +18,8 @@ func PrintEnv() {
 }
 
 func RunShellSpecificCommands(args []string) {
-	if args[2] == "zsh" {
-		SetEnvForZSH()
-	} else if args[2] == "bash" {
-		SetEnvForBash()
+	if args[2] == "zsh" || args[2] == "bash" {
+		SetEnvForPosix()
 	} else if args[2] == "powershell" {
 		SetEnvForPowershell()
 	} else {

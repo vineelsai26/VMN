@@ -136,6 +136,18 @@ func Untar(src string, dest string) error {
 			// manually close here after each file operation; defering would cause each file close
 			// to wait until all operations have completed.
 			f.Close()
+
+		// if it's a symlink create it
+		case tar.TypeSymlink:
+			if err := os.Symlink(header.Linkname, target); err != nil {
+				return err
+			}
+
+		// if it's a hardlink create it
+		case tar.TypeLink:
+			if err := os.Link(header.Linkname, target); err != nil {
+				return err
+			}
 		}
 	}
 }

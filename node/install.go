@@ -43,13 +43,13 @@ func GetDownloadURL(version string) (string, error) {
 }
 
 func Install(version string) {
-	// Download file
-	fmt.Println("Downloading Node.js version " + version + "...")
-
 	fullURLFile, err := GetDownloadURL(version)
 	if err != nil {
 		panic(err)
 	}
+
+	// Download file
+	fmt.Println("Downloading Node.js from " + fullURLFile)
 
 	fileName, err := utils.Download(fullURLFile)
 	if err != nil {
