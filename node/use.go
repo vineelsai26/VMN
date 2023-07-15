@@ -69,15 +69,15 @@ func UseSpecific(version string) {
 	} else if len(strings.Split(version, ".")) == 2 {
 		if strings.Contains(version, "v") {
 			version = strings.Split(version, "v")[1]
-			Use(GetLatestVersionOfVersion(strings.Split(version, ".")[0], strings.Split(version, ".")[1]))
+			Use(GetLatestInstalledVersionOfVersion(strings.Split(version, ".")[0], strings.Split(version, ".")[1]))
 		} else {
-			Use(GetLatestVersionOfVersion(strings.Split(version, ".")[0], strings.Split(version, ".")[1]))
+			Use(GetLatestInstalledVersionOfVersion(strings.Split(version, ".")[0], strings.Split(version, ".")[1]))
 		}
 	} else if len(strings.Split(version, ".")) == 1 {
 		if strings.Contains(version, "v") {
-			Use(GetLatestVersionOfVersion(strings.Split(version, "v")[1], ""))
+			Use(GetLatestInstalledVersionOfVersion(strings.Split(version, "v")[1], ""))
 		} else {
-			Use(GetLatestVersionOfVersion(version, ""))
+			Use(GetLatestInstalledVersionOfVersion(version, ""))
 		}
 	} else {
 		panic("invalid version")

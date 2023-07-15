@@ -5,6 +5,8 @@ import (
 	"io"
 	"net/http"
 	"strings"
+
+	"vineelsai.com/vmn/utils"
 )
 
 func getVersions() []map[string]interface{} {
@@ -55,4 +57,26 @@ func GetLatestVersionOfVersion(major string, minor string) string {
 		}
 	}
 	panic("version not found")
+}
+
+func GetLatestInstalledVersionOfVersion(major string, minor string) string {
+	versions := getVersions()
+	if minor != "" {
+		for _, version := range versions {
+			if strings.Split(version["version"].(string), ".")[0] == "v"+major && strings.Split(version["version"].(string), ".")[1] == minor {
+				if utils.IsInstalled(version["version"].(string)) {
+					return version["version"].(string)
+				}
+			}
+		}
+	} else {
+		for _, version := range versions {
+			if strings.Split(version["version"].(string), ".")[0] == "v"+major {
+				if utils.IsInstalled(version["version"].(string)) {
+					return version["version"].(string)
+				}
+			}
+		}
+	}
+	panic("version not installed")
 }
