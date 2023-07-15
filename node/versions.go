@@ -39,12 +39,20 @@ func GetLatestLTSVersion() string {
 	return ""
 }
 
-func GetLatestVersionOfVersion(major string) string {
+func GetLatestVersionOfVersion(major string, minor string) string {
 	versions := getVersions()
-	for _, version := range versions {
-		if strings.Split(version["version"].(string), ".")[0] == "v"+major {
-			return version["version"].(string)
+	if minor != "" {
+		for _, version := range versions {
+			if strings.Split(version["version"].(string), ".")[0] == "v"+major && strings.Split(version["version"].(string), ".")[1] == minor {
+				return version["version"].(string)
+			}
+		}
+	} else {
+		for _, version := range versions {
+			if strings.Split(version["version"].(string), ".")[0] == "v"+major {
+				return version["version"].(string)
+			}
 		}
 	}
-	return ""
+	panic("version not found")
 }

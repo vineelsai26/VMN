@@ -16,9 +16,7 @@ setNodeVersion() {
 			export PATH="$HOME/.vmn/node/$(cat .vmnrc)/bin:$PATH"
 		fi
 		echo "Using node version $(node --version)"
-	fi
-
-	if [ -f .nvmrc ]; then
+	elif [ -f .nvmrc ]; then
 		echo "Found .nvmrc file"
 		if [ -f $HOME/.vmn/node/$(cat .nvmrc)/bin/node ]; then
 			export PATH="$HOME/.vmn/node/$(cat .nvmrc)/bin:$PATH"
@@ -27,9 +25,7 @@ setNodeVersion() {
 			export PATH="$HOME/.vmn/node/$(cat .nvmrc)/bin:$PATH"
 		fi
 		echo "Using node version $(node --version)"
-	fi
-
-	if [ -f .node-version ]; then
+	elif [ -f .node-version ]; then
 		echo "Found .node-version file"
 		if [ -f $HOME/.vmn/node/$(cat .node-version)/bin/node ]; then
 			export PATH="$HOME/.vmn/node/$(cat .node-version)/bin:$PATH"

@@ -84,5 +84,26 @@ func InstallLatestLTS() {
 }
 
 func InstallSpecific(version string) {
-	Install(GetLatestVersionOfVersion(version))
+	if len(strings.Split(version, ".")) == 3 {
+		if strings.Contains(version, "v") {
+			Install(version)
+		} else {
+			Install("v" + version)
+		}
+	} else if len(strings.Split(version, ".")) == 2 {
+		if strings.Contains(version, "v") {
+			version = strings.Split(version, "v")[1]
+			Install(GetLatestVersionOfVersion(strings.Split(version, ".")[0], strings.Split(version, ".")[1]))
+		} else {
+			Install(GetLatestVersionOfVersion(strings.Split(version, ".")[0], strings.Split(version, ".")[1]))
+		}
+	} else if len(strings.Split(version, ".")) == 1 {
+		if strings.Contains(version, "v") {
+			Install(GetLatestVersionOfVersion(strings.Split(version, "v")[1], ""))
+		} else {
+			Install(GetLatestVersionOfVersion(version, ""))
+		}
+	} else {
+		panic("invalid version")
+	}
 }
