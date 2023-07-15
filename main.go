@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"strconv"
 
 	"vineelsai.com/vmn/node"
 	"vineelsai.com/vmn/setup"
@@ -43,35 +42,21 @@ func help() {
 
 func main() {
 	if len(os.Args) > 2 {
-		IsVersionExist := false
-		for _, version := range node.GetAllVersions() {
-			if os.Args[2] == version {
-				IsVersionExist = true
-			}
-		}
 		if os.Args[1] == "install" {
 			if os.Args[2] == "latest" {
 				node.InstallLatest()
 			} else if os.Args[2] == "lts" {
 				node.InstallLatestLTS()
-			} else if _, err := strconv.Atoi(os.Args[2]); err == nil {
-				node.InstallSpecific(os.Args[2])
-			} else if IsVersionExist {
-				node.InstallSpecific(os.Args[2])
 			} else {
-				panic("Invalid version")
+				node.InstallSpecific(os.Args[2])
 			}
 		} else if os.Args[1] == "use" {
 			if os.Args[2] == "latest" {
 				node.UseLatest()
 			} else if os.Args[2] == "lts" {
 				node.UseLatestLTS()
-			} else if _, err := strconv.Atoi(os.Args[2]); err == nil {
-				node.UseSpecific(os.Args[2])
-			} else if IsVersionExist {
-				node.UseSpecific(os.Args[2])
 			} else {
-				panic("Invalid version")
+				node.UseSpecific(os.Args[2])
 			}
 		} else if os.Args[1] == "list" {
 			if os.Args[2] == "all" {

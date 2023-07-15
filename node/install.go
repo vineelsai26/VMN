@@ -76,14 +76,17 @@ func Install(version string) {
 }
 
 func InstallLatest() {
+	// Install latest version
 	Install(GetLatestVersion())
 }
 
 func InstallLatestLTS() {
+	// Install latest LTS version
 	Install(GetLatestLTSVersion())
 }
 
 func InstallSpecific(version string) {
+	// Determine Specific SemVer Version from input
 	if len(strings.Split(version, ".")) == 3 {
 		if strings.Contains(version, "v") {
 			Install(version)
