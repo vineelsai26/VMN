@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strings"
 
-	"vineelsai.com/vmn/utils"
+	"vineelsai.com/vmn/src/utils"
 )
 
 func getVersions() []map[string]interface{} {

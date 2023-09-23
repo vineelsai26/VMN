@@ -2,21 +2,49 @@
 
 VMN is a simple tool for managing Node.js versions. It's written in Go and is available for Linux, macOS and Windows.
 
-## Installation
+## Linux
 
-### Linux
+### Manual Install
 
 ```bash
-wget https://github.com/vineelsai26/VMN/releases/download/v0.0.2/vmn-linux-amd64.tar.gz -O vmn-linux-amd64.tar.gz
+wget https://github.com/vineelsai26/VMN/releases/latest/download/vmn-linux-amd64.tar.gz -O vmn-linux-amd64.tar.gz
 tar -xvf vmn-linux-amd64.tar.gz
 sudo mv vmn /usr/local/bin
 ```
 
-### macOS
+### Arch Linux Install
+
+Add the following to `/etc/pacman.conf`:
 
 ```bash
-wget https://github.com/vineelsai26/VMN/releases/download/v0.0.2/vmn-darwin-amd64.tar.gz -O vmn-linux-amd64.tar.gz
-tar -xvf vmn-linux-amd64.tar.gz
+[vineelsai-arch-repo]
+Server = https://repo.vineelsai.com/linux/arch/$arch
+```
+
+Then run:
+
+```bash
+sudo pacman-key --lsign-key 4431E64723B4ADDE
+sudo pacman -Syu vmn
+```
+
+### Debian/Ubuntu Install
+
+```bash
+curl -fsSL https://repo.vineelsai.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/vineelsai.gpg
+
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/vineelsai.gpg] https://repo.vineelsai.com/linux/debian stable main" | sudo tee /etc/apt/sources.list.d/vineelsai.list > /dev/null
+
+sudo apt update
+
+sudo apt install vmn
+```
+
+## macOS
+
+```bash
+wget https://github.com/vineelsai26/VMN/releases/latest/download/vmn-macos-arm64.tar.gz -O vmn-macos-arm64.tar.gz
+tar -xvf vmn-macos-arm64.tar.gz
 sudo mv vmn /usr/local/bin
 ```
 

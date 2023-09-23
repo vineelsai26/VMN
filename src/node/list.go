@@ -1,7 +1,7 @@
 package node
 
 import (
-	"vineelsai.com/vmn/utils"
+	"vineelsai.com/vmn/src/utils"
 )
 
 func GetAllVersions() []string {

@@ -6,7 +6,7 @@ import (
 	"runtime"
 	"strings"
 
-	"vineelsai.com/vmn/utils"
+	"vineelsai.com/vmn/src/utils"
 )
 
 func GetDownloadURL(version string) (string, error) {

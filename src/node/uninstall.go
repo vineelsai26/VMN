@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"vineelsai.com/vmn/utils"
+	"vineelsai.com/vmn/src/utils"
 )
 
 func UninstallAll() {

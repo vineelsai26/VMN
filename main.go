@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"os"
 
-	"vineelsai.com/vmn/node"
-	"vineelsai.com/vmn/setup"
-	"vineelsai.com/vmn/shell"
-	"vineelsai.com/vmn/version"
+	"vineelsai.com/vmn/src"
+	"vineelsai.com/vmn/src/node"
+	"vineelsai.com/vmn/src/setup"
+	"vineelsai.com/vmn/src/shell"
 )
 
 func help() {
@@ -101,7 +101,7 @@ func main() {
 		} else if os.Args[1] == "help" {
 			help()
 		} else if os.Args[1] == "version" {
-			version.GetVersion()
+			src.GetVersion()
 		} else if os.Args[1] == "setup" {
 			setup.Install()
 		} else {

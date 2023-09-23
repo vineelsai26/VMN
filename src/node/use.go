@@ -7,13 +7,13 @@ import (
 	"runtime"
 	"strings"
 
-	"vineelsai.com/vmn/location"
-	"vineelsai.com/vmn/utils"
+	"vineelsai.com/vmn/src/setup"
+	"vineelsai.com/vmn/src/utils"
 )
 
 func SetPath(path string) {
 	if runtime.GOOS == "windows" || runtime.GOOS == "linux" || runtime.GOOS == "darwin" {
-		location.Set(path)
+		setup.SetPath(path)
 	} else {
 		fmt.Println("Not implemented for this OS")
 	}
