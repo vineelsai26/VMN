@@ -4,9 +4,11 @@
 package setup
 
 import (
+	"fmt"
 	"io"
 	"os"
 	"os/exec"
+	"os/user"
 	"path/filepath"
 	"strings"
 
@@ -14,9 +16,26 @@ import (
 )
 
 func Install() {
+	fmt.Println("Installing VMN...")
 	dir, err := os.Getwd()
 	if err != nil {
 		panic(err)
+	}
+
+	user, err := user.Current()
+	if err != nil {
+		panic(err)
+	}
+
+	username := user.Username
+	var installPath string
+
+	if username == "root" {
+		fmt.Println("Installing VMN as root, VMN will be installed in /usr/local/bin")
+		installPath = "/usr/local/bin"
+	} else {
+		fmt.Println("Installing VMN as " + username + ", VMN will be installed in ~/.local/bin (make sure this is in your PATH)")
+		installPath = filepath.Join(utils.GetHome(), ".local", "bin")
 	}
 
 	srcFile, err := os.Open(filepath.Join(dir, "vmn"))
@@ -25,13 +44,13 @@ func Install() {
 	}
 	defer srcFile.Close()
 
-	if _, err := os.Stat(filepath.Join(utils.GetHome(), ".vmn")); os.IsNotExist(err) {
-		if err := os.MkdirAll(filepath.Join(utils.GetHome(), ".vmn"), 0755); err != nil {
+	if _, err := os.Stat(installPath); os.IsNotExist(err) {
+		if err := os.MkdirAll(installPath, 0755); err != nil {
 			panic(err)
 		}
 	}
 
-	destFile, err := os.Create(filepath.Join(utils.GetHome(), ".vmn", "vmn"))
+	destFile, err := os.Create(filepath.Join(installPath, "vmn"))
 	if err != nil {
 		panic(err)
 	}
@@ -40,6 +59,7 @@ func Install() {
 	if _, err := io.Copy(destFile, srcFile); err != nil {
 		panic(err)
 	}
+	fmt.Println("VMN installed successfully!")
 }
 
 func SetPath(path string) {
