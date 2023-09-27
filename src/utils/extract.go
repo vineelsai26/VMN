@@ -22,7 +22,11 @@ func Unzip(src string, dest string) error {
 		}
 	}()
 
-	os.MkdirAll(dest, 0755)
+	if _, err := os.Stat(dest); os.IsNotExist(err) {
+		if err := os.MkdirAll(dest, 0755); err != nil {
+			panic(err)
+		}
+	}
 
 	// Closure to address file descriptors issue with all the deferred .Close() methods
 	extractAndWriteFile := func(f *zip.File) error {
@@ -75,10 +79,18 @@ func Unzip(src string, dest string) error {
 	return nil
 }
 
-func Untar(src string, dest string) error {
+func UnGzip(src string, dest string) error {
 	r, err := os.Open(src)
 	if err != nil {
 		return err
+	}
+
+	fmt.Println(dest)
+
+	if _, err := os.Stat(dest); os.IsNotExist(err) {
+		if err := os.MkdirAll(dest, 0755); err != nil {
+			return err
+		}
 	}
 
 	gzr, err := gzip.NewReader(r)

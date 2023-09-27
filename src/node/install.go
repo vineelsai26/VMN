@@ -3,6 +3,7 @@ package node
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"runtime"
 	"strings"
 
@@ -47,11 +48,13 @@ func Install(version string) {
 	if err != nil {
 		panic(err)
 	}
+	downloadDir := filepath.Join(utils.GetHome(), ".cache", "vmn")
+	downloadedFilePath := filepath.Join(downloadDir, strings.Split(fullURLFile, "/")[len(strings.Split(fullURLFile, "/"))-1])
 
 	// Download file
 	fmt.Println("Downloading Node.js from " + fullURLFile)
 
-	fileName, err := utils.Download(fullURLFile)
+	fileName, err := utils.Download(downloadDir, fullURLFile)
 	if err != nil {
 		panic(err)
 	}
@@ -59,11 +62,11 @@ func Install(version string) {
 	// Unzip file
 	fmt.Println("Installing Node.js version " + version + "...")
 	if strings.HasSuffix(fileName, ".zip") {
-		if err := utils.Unzip(fileName, utils.GetDestination(version)); err != nil {
+		if err := utils.Unzip(downloadedFilePath, utils.GetDestination(version, "node")); err != nil {
 			panic(err)
 		}
 	} else if strings.HasSuffix(fileName, ".tar.gz") {
-		if err := utils.Untar(fileName, utils.GetDestination(version)); err != nil {
+		if err := utils.UnGzip(downloadedFilePath, utils.GetDestination(version, "node")); err != nil {
 			panic(err)
 		}
 	}

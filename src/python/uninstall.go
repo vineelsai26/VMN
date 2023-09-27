@@ -1,4 +1,4 @@
-package node
+package python
 
 import (
 	"fmt"
@@ -17,21 +17,15 @@ func UninstallLatest() {
 	UninstallSpecific(GetLatestVersion())
 }
 
-func UninstallAllLTS() {
-	for _, version := range GetAllLTSVersions() {
-		UninstallSpecific(version)
-	}
-}
-
 func UninstallSpecific(version string) {
-	if utils.IsInstalled(version, "node") {
+	if utils.IsInstalled(version, "python") {
 		Uninstall(version)
 	}
 }
 
 func Uninstall(version string) {
-	fmt.Printf("Uninstalling Node.js %s\n", version)
-	path, err := utils.GetVersionPath(version, "node")
+	fmt.Printf("Uninstalling Python %s\n", version)
+	path, err := utils.GetVersionPath(version, "python")
 	if err != nil {
 		panic(err)
 	}

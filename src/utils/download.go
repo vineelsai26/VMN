@@ -6,13 +6,20 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
-func Download(fullURLFile string) (string, error) {
+func Download(downloadDir string, fullURLFile string) (string, error) {
 	fileURL, err := url.Parse(fullURLFile)
 	if err != nil {
 		return "", err
+	}
+
+	if _, err := os.Stat(downloadDir); os.IsNotExist(err) {
+		if err := os.MkdirAll(downloadDir, 0755); err != nil {
+			panic(err)
+		}
 	}
 
 	path := fileURL.Path
@@ -39,7 +46,7 @@ func Download(fullURLFile string) (string, error) {
 	defer resp.Body.Close()
 
 	// Create blank file
-	file, err := os.Create(fileName)
+	file, err := os.Create(filepath.Join(downloadDir, fileName))
 	if err != nil {
 		return "", err
 	}

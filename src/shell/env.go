@@ -7,7 +7,7 @@ import (
 
 func setEnvForPosixShell() {
 	fmt.Println(`
-export PATH="$(cat $HOME/.vmn/current):$PATH"
+export PATH="$(cat $HOME/.vmn/node-version):$PATH"
 
 setNodeVersion() {
 	if [ -f .vmnrc ]; then
@@ -40,12 +40,27 @@ setNodeVersion() {
 	fi
 }
 
+setPythonVersion() {
+	if [ -f .python-version ]; then
+		echo "Found .python-version file"
+		if [ -f $HOME/.vmn/python/$(cat .python-version)/bin/python ]; then
+			export PATH="$HOME/.vmn/python/$(cat .python-version)/bin:$PATH"
+		else
+			vmn python install $(cat .python-version)
+			export PATH="$HOME/.vmn/python/$(cat .python-version)/bin:$PATH"
+		fi
+		echo "Using python version $(python --version)"
+	fi
+}
+
 cd() {
 	builtin cd "$@"
 	setNodeVersion
+	setPythonVersion
 }
 
 setNodeVersion
+setPythonVersion
 	`)
 }
 

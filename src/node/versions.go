@@ -26,6 +26,36 @@ func getVersions() []map[string]interface{} {
 	return versions
 }
 
+func GetAllVersions() []string {
+	versions := getVersions()
+	var allVersions []string
+	for _, version := range versions {
+		allVersions = append(allVersions, version["version"].(string))
+	}
+	return allVersions
+}
+
+func GetAllLTSVersions() []string {
+	versions := getVersions()
+	var ltsVersions []string
+	for _, version := range versions {
+		if version["lts"] != nil && version["lts"] != false && version["lts"] != "" {
+			ltsVersions = append(ltsVersions, version["version"].(string))
+		}
+	}
+	return ltsVersions
+}
+
+func GetInstalledVersions() []string {
+	var installedVersions []string
+	for _, version := range GetAllVersions() {
+		if utils.IsInstalled(version, "node") {
+			installedVersions = append(installedVersions, version)
+		}
+	}
+	return installedVersions
+}
+
 func GetLatestVersion() string {
 	versions := getVersions()
 	return versions[0]["version"].(string)
@@ -64,7 +94,7 @@ func GetLatestInstalledVersionOfVersion(major string, minor string) string {
 	if minor != "" {
 		for _, version := range versions {
 			if strings.Split(version["version"].(string), ".")[0] == "v"+major && strings.Split(version["version"].(string), ".")[1] == minor {
-				if utils.IsInstalled(version["version"].(string)) {
+				if utils.IsInstalled(version["version"].(string), "node") {
 					return version["version"].(string)
 				}
 			}
@@ -72,7 +102,7 @@ func GetLatestInstalledVersionOfVersion(major string, minor string) string {
 	} else {
 		for _, version := range versions {
 			if strings.Split(version["version"].(string), ".")[0] == "v"+major {
-				if utils.IsInstalled(version["version"].(string)) {
+				if utils.IsInstalled(version["version"].(string), "node") {
 					return version["version"].(string)
 				}
 			}

@@ -1,4 +1,4 @@
-package node
+package python
 
 import (
 	"fmt"
@@ -12,7 +12,7 @@ import (
 )
 
 func SetPath(path string) {
-	if runtime.GOOS == "windows" || runtime.GOOS == "linux" || runtime.GOOS == "darwin" {
+	if runtime.GOOS == "linux" || runtime.GOOS == "darwin" {
 		setup.SetPath(path)
 	} else {
 		fmt.Println("Not implemented for this OS")
@@ -20,7 +20,7 @@ func SetPath(path string) {
 }
 
 func Use(version string) {
-	path, err := utils.GetVersionPath(version, "node")
+	path, err := utils.GetVersionPath(version, "python")
 	if err != nil {
 		panic(err)
 	}
@@ -31,7 +31,7 @@ func Use(version string) {
 		}
 	}
 
-	f, err := os.OpenFile(filepath.Join(utils.GetHome(), ".vmn", "node-version"), os.O_RDWR|os.O_CREATE, 0755)
+	f, err := os.OpenFile(filepath.Join(utils.GetHome(), ".vmn", "python-version"), os.O_RDWR|os.O_CREATE, 0755)
 	if err != nil {
 		panic(err)
 	}
@@ -47,16 +47,12 @@ func Use(version string) {
 		fmt.Println("Setting VMN_VERSION to " + version + " ... ")
 		SetPath(path)
 	} else {
-		fmt.Println("Node.js version " + version + " is not installed")
+		fmt.Println("Python version " + version + " is not installed")
 	}
 }
 
 func UseLatest() {
 	Use(GetLatestVersion())
-}
-
-func UseLatestLTS() {
-	Use(GetLatestLTSVersion())
 }
 
 func UseSpecific(version string) {
