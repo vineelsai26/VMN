@@ -10,7 +10,7 @@ import (
 	"vineelsai.com/vmn/src/utils"
 )
 
-func GetDownloadURL(version string) (string, error) {
+func getDownloadURL(version string) (string, error) {
 	if runtime.GOOS == "windows" {
 		if runtime.GOARCH == "amd64" {
 			return "https://nodejs.org/dist/" + version + "/node-" + version + "-win-x64.zip", nil
@@ -43,8 +43,8 @@ func GetDownloadURL(version string) (string, error) {
 	return "", fmt.Errorf("unsupported os or architecture")
 }
 
-func Install(version string) {
-	fullURLFile, err := GetDownloadURL(version)
+func installVersion(version string) {
+	fullURLFile, err := getDownloadURL(version)
 	if err != nil {
 		panic(err)
 	}
@@ -78,36 +78,29 @@ func Install(version string) {
 	}
 }
 
-func InstallLatest() {
-	// Install latest version
-	Install(GetLatestVersion())
-}
-
-func InstallLatestLTS() {
-	// Install latest LTS version
-	Install(GetLatestLTSVersion())
-}
-
-func InstallSpecific(version string) {
-	// Determine Specific SemVer Version from input
-	if len(strings.Split(version, ".")) == 3 {
+func Install(version string) {
+	if version == "latest" {
+		installVersion(GetLatestVersion())
+	} else if version == "lts" {
+		installVersion(GetLatestLTSVersion())
+	} else if len(strings.Split(version, ".")) == 3 {
 		if strings.Contains(version, "v") {
-			Install(version)
+			installVersion(version)
 		} else {
-			Install("v" + version)
+			installVersion("v" + version)
 		}
 	} else if len(strings.Split(version, ".")) == 2 {
 		if strings.Contains(version, "v") {
 			version = strings.Split(version, "v")[1]
-			Install(GetLatestVersionOfVersion(strings.Split(version, ".")[0], strings.Split(version, ".")[1]))
+			installVersion(GetLatestVersionOfVersion(strings.Split(version, ".")[0], strings.Split(version, ".")[1]))
 		} else {
-			Install(GetLatestVersionOfVersion(strings.Split(version, ".")[0], strings.Split(version, ".")[1]))
+			installVersion(GetLatestVersionOfVersion(strings.Split(version, ".")[0], strings.Split(version, ".")[1]))
 		}
 	} else if len(strings.Split(version, ".")) == 1 {
 		if strings.Contains(version, "v") {
-			Install(GetLatestVersionOfVersion(strings.Split(version, "v")[1], ""))
+			installVersion(GetLatestVersionOfVersion(strings.Split(version, "v")[1], ""))
 		} else {
-			Install(GetLatestVersionOfVersion(version, ""))
+			installVersion(GetLatestVersionOfVersion(version, ""))
 		}
 	} else {
 		panic("invalid version")

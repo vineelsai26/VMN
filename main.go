@@ -22,6 +22,18 @@ func help() {
 	fmt.Println("  env                      			Print environment variables")
 	fmt.Println("  help                     			Print this help")
 	fmt.Println("  version                  			Print version")
+}
+
+func nodeHelp() {
+	fmt.Println("Usage: vmn <command> [version]")
+	fmt.Println("Commands:")
+	fmt.Println("  install [version]        			Install a specific version of node or latest or lts version of node (default: lts)")
+	fmt.Println("  use [version]            			Use a specific version of node")
+	fmt.Println("  list [type]              			List all versions, installed versions or lts versions")
+	fmt.Println("  uninstall [version]      			Uninstall a specific version of node")
+	fmt.Println("  env                      			Print environment variables")
+	fmt.Println("  help                     			Print this help")
+	fmt.Println("  version                  			Print version")
 	fmt.Println("Examples:")
 	fmt.Println("  vmn install latest       			Install the latest version of node")
 	fmt.Println("  vmn use latest           			Use the latest version of node")
@@ -43,50 +55,16 @@ func help() {
 }
 
 func handleNodeVersionManagement(args []string) {
-	if args[0] == "install" {
-		if args[1] == "latest" {
-			node.InstallLatest()
-		} else if args[1] == "lts" {
-			node.InstallLatestLTS()
-		} else {
-			node.InstallSpecific(args[1])
-		}
+	if args[0] == "help" {
+		nodeHelp()
+	} else if args[0] == "install" {
+		node.Install(args[1])
 	} else if args[0] == "use" {
-		if args[1] == "latest" {
-			node.UseLatest()
-		} else if args[1] == "lts" {
-			node.UseLatestLTS()
-		} else {
-			node.UseSpecific(args[1])
-		}
+		node.Use(args[1])
 	} else if args[0] == "list" {
-		if args[1] == "all" {
-			for _, version := range node.GetAllVersions() {
-				println(version)
-			}
-		} else if args[1] == "lts" {
-			for _, version := range node.GetAllLTSVersions() {
-				println(version)
-			}
-		} else if args[1] == "installed" {
-			for _, version := range node.GetInstalledVersions() {
-				println(version)
-			}
-		} else {
-			panic("Invalid list type")
-		}
+		node.List(args[1])
 	} else if args[0] == "uninstall" {
-		if args[1] == "all" {
-			node.UninstallAll()
-		} else if args[1] == "lts" {
-			node.UninstallAllLTS()
-		} else if args[1] == "latest" {
-			node.UninstallLatest()
-		} else if args[1] != "" {
-			node.UninstallSpecific(args[1])
-		} else {
-			panic("Invalid version")
-		}
+		node.Uninstall(args[1])
 	} else if args[0] == "env" {
 		shell.RunShellSpecificCommands(args)
 	} else {
@@ -99,34 +77,16 @@ func handlePythonVersionManagement(args []string) {
 		panic("Python version management is not supported on Windows")
 	}
 
-	if args[0] == "install" {
-		if args[1] == "latest" {
-			python.InstallLatest()
-		} else {
-			python.InstallSpecific(args[1])
-		}
+	if args[0] == "help" {
+		help()
+	} else if args[0] == "install" {
+		python.Install(args[1])
+	} else if args[0] == "use" {
+		python.Use(args[1])
 	} else if args[0] == "list" {
-		if args[1] == "all" {
-			for _, version := range python.GetAllVersions() {
-				println(version)
-			}
-		} else if args[1] == "installed" {
-			for _, version := range python.GetInstalledVersions() {
-				println(version)
-			}
-		} else {
-			panic("Invalid list type")
-		}
+		python.List(args[1])
 	} else if args[0] == "uninstall" {
-		if args[1] == "all" {
-			python.UninstallAll()
-		} else if args[1] == "latest" {
-			python.UninstallLatest()
-		} else if args[1] != "" {
-			python.UninstallSpecific(args[1])
-		} else {
-			panic("Invalid version")
-		}
+		python.Uninstall(args[1])
 	} else if args[0] == "env" {
 		shell.RunShellSpecificCommands(args)
 	} else {
@@ -135,29 +95,39 @@ func handlePythonVersionManagement(args []string) {
 }
 
 func main() {
-	if len(os.Args) == 1 {
+	args := os.Args[1:]
+
+	if len(args) == 0 {
 		help()
-	} else if len(os.Args) == 2 {
-		if os.Args[1] == "env" {
+	} else if len(os.Args) == 1 {
+		if args[0] == "env" {
 			shell.PrintEnv()
-		} else if os.Args[1] == "list" {
+		} else if args[0] == "list" {
 			for _, version := range node.GetInstalledVersions() {
 				println(version)
 			}
-		} else if os.Args[1] == "help" {
+		} else if args[0] == "help" {
 			help()
-		} else if os.Args[1] == "version" {
+		} else if args[0] == "version" {
 			src.GetVersion()
-		} else if os.Args[1] == "setup" {
+		} else if args[0] == "setup" {
 			setup.Install()
 		}
+	} else if len(os.Args) == 2 {
+		// python or node
+		if args[0] == "python" {
+			handlePythonVersionManagement(args)
+		} else if args[0] == "node" {
+			handleNodeVersionManagement(args)
+		} else {
+			handleNodeVersionManagement(args)
+		}
 	} else if len(os.Args) == 3 {
-		handleNodeVersionManagement(os.Args[1:])
-	} else if len(os.Args) == 4 {
-		if os.Args[1] == "python" {
-			handlePythonVersionManagement(os.Args[2:])
-		} else if os.Args[1] == "node" {
-			handleNodeVersionManagement(os.Args[2:])
+		// python or node
+		if args[0] == "python" {
+			handlePythonVersionManagement(args[1:])
+		} else if args[0] == "node" {
+			handleNodeVersionManagement(args[1:])
 		} else {
 			panic("Invalid command")
 		}

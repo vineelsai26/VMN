@@ -98,3 +98,17 @@ func GetLatestInstalledVersionOfVersion(major string, minor string) string {
 	}
 	panic("version not installed")
 }
+
+func List(status string) {
+	if status == "all" {
+		for _, version := range GetAllVersions() {
+			println(version)
+		}
+	} else if status == "installed" {
+		for _, version := range GetInstalledVersions() {
+			println(version)
+		}
+	} else {
+		panic("Invalid list type")
+	}
+}

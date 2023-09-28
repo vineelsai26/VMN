@@ -7,27 +7,28 @@ import (
 	"vineelsai.com/vmn/src/utils"
 )
 
-func UninstallAll() {
-	for _, version := range GetAllVersions() {
-		UninstallSpecific(version)
+func uninstallVersion(version string) {
+	if !utils.IsInstalled(version, "python") {
+		panic("Python version " + version + " is not installed")
 	}
-}
-
-func UninstallLatest() {
-	UninstallSpecific(GetLatestVersion())
-}
-
-func UninstallSpecific(version string) {
-	if utils.IsInstalled(version, "python") {
-		Uninstall(version)
-	}
-}
-
-func Uninstall(version string) {
 	fmt.Printf("Uninstalling Python %s\n", version)
 	path, err := utils.GetVersionPath(version, "python")
 	if err != nil {
 		panic(err)
 	}
 	os.RemoveAll(path)
+}
+
+func Uninstall(version string) {
+	if version == "all" {
+		for _, version := range GetAllVersions() {
+			uninstallVersion(version)
+		}
+	} else if version == "latest" {
+		uninstallVersion(GetLatestVersion())
+	} else if version != "" {
+		uninstallVersion(version)
+	} else {
+		panic("Invalid version")
+	}
 }
