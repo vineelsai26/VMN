@@ -99,7 +99,7 @@ func main() {
 
 	if len(args) == 0 {
 		help()
-	} else if len(os.Args) == 1 {
+	} else if len(args) == 1 {
 		if args[0] == "env" {
 			shell.PrintEnv()
 		} else if args[0] == "list" {
@@ -113,7 +113,7 @@ func main() {
 		} else if args[0] == "setup" {
 			setup.Install()
 		}
-	} else if len(os.Args) == 2 {
+	} else if len(args) == 2 {
 		// python or node
 		if args[0] == "python" {
 			handlePythonVersionManagement(args)
@@ -122,7 +122,7 @@ func main() {
 		} else {
 			handleNodeVersionManagement(args)
 		}
-	} else if len(os.Args) == 3 {
+	} else if len(args) == 3 {
 		// python or node
 		if args[0] == "python" {
 			handlePythonVersionManagement(args[1:])
