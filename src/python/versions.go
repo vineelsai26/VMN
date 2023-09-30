@@ -81,8 +81,8 @@ func GetLatestInstalledVersionOfVersion(major string, minor string) string {
 	versions := GetAllVersions()
 	if minor != "" {
 		for _, version := range versions {
-			if strings.Split(version, ".")[0] == "v"+major && strings.Split(version, ".")[1] == minor {
-				if utils.IsInstalled(version, "python") {
+			if strings.Split(version, ".")[0] == major && strings.Split(version, ".")[1] == minor {
+				if utils.IsInstalled("v"+version, "python") {
 					return version
 				}
 			}

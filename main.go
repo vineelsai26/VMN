@@ -114,8 +114,9 @@ func main() {
 			setup.Install()
 		}
 	} else if len(args) == 2 {
-		// python or node
-		if args[0] == "python" {
+		if args[0] == "env" {
+			shell.RunShellSpecificCommands(args)
+		} else if args[0] == "python" {
 			handlePythonVersionManagement(args)
 		} else if args[0] == "node" {
 			handleNodeVersionManagement(args)

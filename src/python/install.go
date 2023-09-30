@@ -14,7 +14,7 @@ import (
 func installVersion(version string) {
 	fullURLFile := "https://www.python.org/ftp/python/" + version + "/Python-" + version + ".tgz"
 	downloadDir := filepath.Join(utils.GetHome(), ".cache", "vmn")
-	buildDir := filepath.Join(downloadDir, "build")
+	buildDir := filepath.Join(downloadDir, "build", version)
 	downloadedFilePath := filepath.Join(downloadDir, strings.Split(fullURLFile, "/")[len(strings.Split(fullURLFile, "/"))-1])
 
 	// Download file
@@ -31,13 +31,26 @@ func installVersion(version string) {
 			panic(err)
 		}
 
-		err := exec.Command(
+		cmd := exec.Command(
 			"/bin/bash",
 			"-c",
-			"cd "+buildDir+" && ./configure --prefix="+utils.GetDestination(version, "python")+" --enable-optimizations && make -j"+strconv.Itoa(utils.GetCPUCount())+" && sudo make altinstall",
-		).Run()
+			"cd "+buildDir+" && ./configure --prefix="+utils.GetDestination("v"+version, "python")+" --enable-optimizations && make -j"+strconv.Itoa(utils.GetCPUCount())+" && sudo make altinstall",
+		)
+		out, err := cmd.StdoutPipe()
 		if err != nil {
 			panic(err)
+		}
+
+		if err = cmd.Start(); err != nil {
+			panic(err)
+		}
+		for {
+			tmp := make([]byte, 1024)
+			_, err := out.Read(tmp)
+			fmt.Print(string(tmp))
+			if err != nil {
+				break
+			}
 		}
 	}
 

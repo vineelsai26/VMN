@@ -2,12 +2,19 @@ package shell
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 	"runtime"
+
+	"vineelsai.com/vmn/src/node"
+	"vineelsai.com/vmn/src/python"
+	"vineelsai.com/vmn/src/utils"
 )
 
 func setEnvForPosixShell() {
 	fmt.Println(`
 export PATH="$(cat $HOME/.vmn/node-version):$PATH"
+export PATH="$(cat $HOME/.vmn/python-version):$PATH"
 
 setNodeVersion() {
 	if [ -f .vmnrc ]; then
@@ -110,9 +117,51 @@ func PrintEnv() {
 }
 
 func RunShellSpecificCommands(args []string) {
-	if args[2] == "zsh" || args[2] == "bash" {
+	if _, err := os.Stat(filepath.Join(utils.GetHome(), ".vmn")); os.IsNotExist(err) {
+		if err := os.MkdirAll(filepath.Join(utils.GetHome(), ".vmn"), 0755); err != nil {
+			panic(err)
+		}
+	}
+
+	if _, err := os.Stat(filepath.Join(utils.GetHome(), ".vmn", "node-version")); os.IsNotExist(err) {
+		f, err := os.OpenFile(filepath.Join(utils.GetHome(), ".vmn", "node-version"), os.O_RDWR|os.O_CREATE, 0755)
+		if err != nil {
+			panic(err)
+		}
+
+		defer f.Close()
+		installedNodeVersions := node.GetInstalledVersions()
+		if len(installedNodeVersions) > 0 {
+			if _, err := f.Stat(); err == nil {
+				f.Truncate(0)
+				f.Seek(0, 0)
+				f.WriteString(utils.GetDestination(installedNodeVersions[0], "node"))
+			}
+		}
+
+	}
+
+	if _, err := os.Stat(filepath.Join(utils.GetHome(), ".vmn", "python-version")); os.IsNotExist(err) {
+		f, err := os.OpenFile(filepath.Join(utils.GetHome(), ".vmn", "python-version"), os.O_RDWR|os.O_CREATE, 0755)
+		if err != nil {
+			panic(err)
+		}
+
+		defer f.Close()
+		installedPythonVersions := python.GetInstalledVersions()
+		if len(installedPythonVersions) > 0 {
+			if _, err := f.Stat(); err == nil {
+				f.Truncate(0)
+				f.Seek(0, 0)
+				f.WriteString(utils.GetDestination(python.GetInstalledVersions()[0], "python"))
+			}
+		}
+
+	}
+
+	if args[1] == "zsh" || args[1] == "bash" {
 		setEnvForPosixShell()
-	} else if args[2] == "powershell" {
+	} else if args[1] == "powershell" {
 		setEnvForPowershell()
 	} else {
 		fmt.Println("Not implemented for this shell")

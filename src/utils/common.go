@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 )
 
 func GetHome() string {
@@ -35,12 +36,16 @@ func GetVersionPath(version string, pl string) (string, error) {
 }
 
 func GetBinaryPath(version string, pl string) (string, error) {
+	binaryName := pl
+	if pl == "python" {
+		binaryName = "python" + strings.Split(strings.Split(version, "v")[1], ".")[0] + "." + strings.Split(strings.Split(version, "v")[1], ".")[1]
+	}
 	if runtime.GOOS == "windows" {
-		return filepath.Join(GetDestination(version, pl), pl+".exe"), nil
+		return filepath.Join(GetDestination(version, pl), binaryName+".exe"), nil
 	} else if runtime.GOOS == "linux" {
-		return filepath.Join(GetDestination(version, pl), "bin", pl), nil
+		return filepath.Join(GetDestination(version, pl), "bin", binaryName), nil
 	} else if runtime.GOOS == "darwin" {
-		return filepath.Join(GetDestination(version, pl), "bin", pl), nil
+		return filepath.Join(GetDestination(version, pl), "bin", binaryName), nil
 	}
 	return "", fmt.Errorf("unsupported os")
 }

@@ -11,7 +11,7 @@ import (
 )
 
 func useVersion(version string) {
-	path, err := utils.GetVersionPath(version, "python")
+	path, err := utils.GetVersionPath("v"+version, "python")
 	if err != nil {
 		panic(err)
 	}
