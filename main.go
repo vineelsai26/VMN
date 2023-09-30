@@ -13,45 +13,59 @@ import (
 )
 
 func help() {
-	fmt.Println("Usage: vmn <command> [version]")
-	fmt.Println("Commands:")
-	fmt.Println("  install [version]        			Install a specific version of node or latest or lts version of node (default: lts)")
-	fmt.Println("  use [version]            			Use a specific version of node")
-	fmt.Println("  list [type]              			List all versions, installed versions or lts versions")
-	fmt.Println("  uninstall [version]      			Uninstall a specific version of node")
-	fmt.Println("  env                      			Print environment variables")
-	fmt.Println("  help                     			Print this help")
-	fmt.Println("  version                  			Print version")
+	fmt.Println(
+		`Usage: vmn <runtime> <command> [version]
+use vmn <runtime> help for more information
+runtimes currently supported: node, python`)
 }
 
 func nodeHelp() {
-	fmt.Println("Usage: vmn <command> [version]")
-	fmt.Println("Commands:")
-	fmt.Println("  install [version]        			Install a specific version of node or latest or lts version of node (default: lts)")
-	fmt.Println("  use [version]            			Use a specific version of node")
-	fmt.Println("  list [type]              			List all versions, installed versions or lts versions")
-	fmt.Println("  uninstall [version]      			Uninstall a specific version of node")
-	fmt.Println("  env                      			Print environment variables")
-	fmt.Println("  help                     			Print this help")
-	fmt.Println("  version                  			Print version")
-	fmt.Println("Examples:")
-	fmt.Println("  vmn install latest       			Install the latest version of node")
-	fmt.Println("  vmn use latest           			Use the latest version of node")
-	fmt.Println("  vmn install lts          			Install the latest lts version of node")
-	fmt.Println("  vmn use lts              			Use the latest lts version of node")
-	fmt.Println("  vmn install 18.15.0      			Install a specific version of node")
-	fmt.Println("  vmn use 18.15.0          			Use a specific version of node")
-	fmt.Println("  vmn install 20           			Install a specific version of node")
-	fmt.Println("  vmn use 20               			Use a specific version of node")
-	fmt.Println("  vmn list all             			List all versions of node")
-	fmt.Println("  vmn list installed       			List installed versions of node")
-	fmt.Println("  vmn list lts             			List lts versions of node")
-	fmt.Println("  vmn uninstall all        			Uninstall all versions of node")
-	fmt.Println("  vmn uninstall lts        			Uninstall all lts versions of node")
-	fmt.Println("  vmn env                  			Print environment variables")
-	fmt.Println("  vmn help                 			Print this help")
-	fmt.Println("  vmn version              			Print version")
-	fmt.Println("  VMN_USE_ROSETTA=true vmn install 14  Install x86 version of node on Apple Silicon")
+	fmt.Println(
+		`Usage: vmn node <command> [version]
+Commands:
+	node install [version]        				Install a specific version of node or latest or lts version of node (default: lts)
+	node use [version]            				Use a specific version of node
+	node list [type]              				List all versions, installed versions or lts versions
+	node uninstall [version]      				Uninstall a specific version of node
+	node help                     				Print this help
+Examples:
+	vmn node install latest       				Install the latest version of node
+	vmn node use latest           				Use the latest version of node
+	vmn node install lts          				Install the latest lts version of node
+	vmn node use lts              				Use the latest lts version of node
+	vmn node install 18.15.0      				Install a specific version of node
+	vmn node use 18.15.0          				Use a specific version of node
+	vmn node install 20           				Install a specific version of node
+	vmn node use 20               				Use a specific version of node
+	vmn node list all             				List all versions of node
+	vmn node list installed       				List installed versions of node
+	vmn node list lts             				List lts versions of node
+	vmn node uninstall all        				Uninstall all versions of node
+	vmn node uninstall lts        				Uninstall all lts versions of node
+	vmn node env                  				Print environment variables
+	vmn node help                 				Print this help
+	vmn node version              				Print version
+	VMN_USE_ROSETTA=true vmn node install 14 	Install x86 version of node on Apple Silicon`)
+}
+
+func pythonHelp() {
+	fmt.Println(
+		`Usage: vmn python <command> [version]
+Commands:
+	python install [version]        			Install a specific version of python or latest or lts version of python (default: lts)
+	python use [version]            			Use a specific version of python
+	python list [type]              			List all versions, installed versions or lts versions
+	python uninstall [version]      			Uninstall a specific version of python
+	python help                     			Print this help section
+Examples:
+	vmn python install latest       			Install the latest version of python
+	vmn python use latest           			Use the latest version of python
+	vmn python install 3.11         			Install a specific version of python
+	vmn python use 3.11		          			Use a specific version of python
+	vmn python list all             			List all versions of python
+	vmn python list installed       			List installed versions of python
+	vmn python uninstall all        			Uninstall all versions of python
+	vmn python help                 			Print this help`)
 }
 
 func handleNodeVersionManagement(args []string) {
@@ -78,7 +92,7 @@ func handlePythonVersionManagement(args []string) {
 	}
 
 	if args[0] == "help" {
-		help()
+		pythonHelp()
 	} else if args[0] == "install" {
 		python.Install(args[1])
 	} else if args[0] == "use" {
@@ -119,9 +133,9 @@ func main() {
 		} else if args[0] == "python" {
 			handlePythonVersionManagement(args)
 		} else if args[0] == "node" {
-			handleNodeVersionManagement(args)
+			handleNodeVersionManagement(args[1:])
 		} else {
-			handleNodeVersionManagement(args)
+			handleNodeVersionManagement(args[1:])
 		}
 	} else if len(args) == 3 {
 		// python or node
