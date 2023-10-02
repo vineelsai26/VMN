@@ -43,30 +43,22 @@ func useVersion(version string) {
 }
 
 func Use(version string) {
+	version = strings.TrimPrefix(version, "v")
 	if version == "latest" {
-		useVersion(GetLatestVersion())
-	} else if version == "lts" {
-		useVersion(GetLatestLTSVersion())
+		version = GetLatestVersion()
 	} else if len(strings.Split(version, ".")) == 3 {
-		if strings.Contains(version, "v") {
-			useVersion(version)
-		} else {
-			useVersion("v" + version)
-		}
+		version = "v" + version
 	} else if len(strings.Split(version, ".")) == 2 {
-		if strings.Contains(version, "v") {
-			version = strings.Split(version, "v")[1]
-			useVersion(GetLatestInstalledVersionOfVersion(strings.Split(version, ".")[0], strings.Split(version, ".")[1]))
-		} else {
-			useVersion(GetLatestInstalledVersionOfVersion(strings.Split(version, ".")[0], strings.Split(version, ".")[1]))
-		}
+		version = GetLatestInstalledVersionOfVersion(strings.Split(version, ".")[0], strings.Split(version, ".")[1])
 	} else if len(strings.Split(version, ".")) == 1 {
-		if strings.Contains(version, "v") {
-			useVersion(GetLatestInstalledVersionOfVersion(strings.Split(version, "v")[1], ""))
-		} else {
-			useVersion(GetLatestInstalledVersionOfVersion(version, ""))
-		}
+		version = GetLatestInstalledVersionOfVersion(version, "")
 	} else {
 		panic("invalid version")
 	}
+
+	if !utils.IsInstalled(version, "node") {
+		fmt.Println("installing python version " + version + "...")
+		installVersion(version)
+	}
+	useVersion(version)
 }

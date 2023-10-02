@@ -79,7 +79,7 @@ func installVersion(version string) {
 }
 
 func Install(version string) {
-	version = strings.Replace(version, "v", "", 1)
+	version = strings.TrimPrefix(version, "v")
 	if version == "latest" {
 		version = GetLatestVersion()
 	} else if len(strings.Split(version, ".")) == 3 {
