@@ -73,7 +73,7 @@ func installVersion(version string) {
 
 	// Delete file
 	fmt.Println("Cleaning up...")
-	if err := os.Remove(fileName); err != nil {
+	if err := os.Remove(downloadedFilePath); err != nil {
 		panic(err)
 	}
 }
@@ -82,6 +82,8 @@ func Install(version string) {
 	version = strings.TrimPrefix(version, "v")
 	if version == "latest" {
 		version = GetLatestVersion()
+	} else if version == "lts" {
+		version = GetLatestLTSVersion()
 	} else if len(strings.Split(version, ".")) == 3 {
 		version = "v" + version
 	} else if len(strings.Split(version, ".")) == 2 {

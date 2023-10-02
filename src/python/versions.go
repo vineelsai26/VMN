@@ -77,28 +77,6 @@ func GetLatestVersionOfVersion(major string, minor string) string {
 	panic("version not found")
 }
 
-func GetLatestInstalledVersionOfVersion(major string, minor string) string {
-	versions := GetAllVersions()
-	if minor != "" {
-		for _, version := range versions {
-			if strings.Split(version, ".")[0] == major && strings.Split(version, ".")[1] == minor {
-				if utils.IsInstalled("v"+version, "python") {
-					return version
-				}
-			}
-		}
-	} else {
-		for _, version := range versions {
-			if strings.Split(version, ".")[0] == "v"+major {
-				if utils.IsInstalled(version, "python") {
-					return version
-				}
-			}
-		}
-	}
-	panic("version not installed")
-}
-
 func List(status string) {
 	if status == "all" {
 		for _, version := range GetAllVersions() {

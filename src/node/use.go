@@ -46,18 +46,20 @@ func Use(version string) {
 	version = strings.TrimPrefix(version, "v")
 	if version == "latest" {
 		version = GetLatestVersion()
+	} else if version == "lts" {
+		version = GetLatestLTSVersion()
 	} else if len(strings.Split(version, ".")) == 3 {
 		version = "v" + version
 	} else if len(strings.Split(version, ".")) == 2 {
-		version = GetLatestInstalledVersionOfVersion(strings.Split(version, ".")[0], strings.Split(version, ".")[1])
+		version = GetLatestVersionOfVersion(strings.Split(version, ".")[0], strings.Split(version, ".")[1])
 	} else if len(strings.Split(version, ".")) == 1 {
-		version = GetLatestInstalledVersionOfVersion(version, "")
+		version = GetLatestVersionOfVersion(version, "")
 	} else {
 		panic("invalid version")
 	}
 
 	if !utils.IsInstalled(version, "node") {
-		fmt.Println("installing python version " + version + "...")
+		fmt.Println("installing node version " + version + "...")
 		installVersion(version)
 	}
 	useVersion(version)

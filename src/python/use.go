@@ -49,9 +49,9 @@ func Use(version string) {
 	} else if len(strings.Split(version, ".")) == 3 {
 		version = "v" + version
 	} else if len(strings.Split(version, ".")) == 2 {
-		version = GetLatestInstalledVersionOfVersion(strings.Split(version, ".")[0], strings.Split(version, ".")[1])
+		version = GetLatestVersionOfVersion(strings.Split(version, ".")[0], strings.Split(version, ".")[1])
 	} else if len(strings.Split(version, ".")) == 1 {
-		version = GetLatestInstalledVersionOfVersion(version, "")
+		version = GetLatestVersionOfVersion(version, "")
 	} else {
 		panic("invalid version")
 	}

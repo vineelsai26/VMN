@@ -37,10 +37,9 @@ func GetVersionPath(version string, pl string) (string, error) {
 
 func GetBinaryPath(version string, pl string) (string, error) {
 	binaryName := pl
+	version = strings.TrimPrefix(version, "v")
+
 	if pl == "python" {
-		if strings.Contains(version, "v") {
-			version = strings.Split(version, "v")[1]
-		}
 		binaryName = "python" + strings.Split(version, ".")[0] + "." + strings.Split(version, ".")[1]
 	}
 	if runtime.GOOS == "windows" {
