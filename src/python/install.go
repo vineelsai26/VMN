@@ -65,28 +65,22 @@ func installVersion(version string) {
 }
 
 func Install(version string) {
+	version = strings.Replace(version, "v", "", 1)
 	if version == "latest" {
-		installVersion(GetLatestVersion())
+		version = GetLatestVersion()
 	} else if len(strings.Split(version, ".")) == 3 {
-		if strings.Contains(version, "v") {
-			installVersion(version)
-		} else {
-			installVersion("v" + version)
-		}
+		version = "v" + version
 	} else if len(strings.Split(version, ".")) == 2 {
-		if strings.Contains(version, "v") {
-			version = strings.Split(version, "v")[1]
-			installVersion(GetLatestVersionOfVersion(strings.Split(version, ".")[0], strings.Split(version, ".")[1]))
-		} else {
-			installVersion(GetLatestVersionOfVersion(strings.Split(version, ".")[0], strings.Split(version, ".")[1]))
-		}
+		version = GetLatestVersionOfVersion(strings.Split(version, ".")[0], strings.Split(version, ".")[1])
 	} else if len(strings.Split(version, ".")) == 1 {
-		if strings.Contains(version, "v") {
-			installVersion(GetLatestVersionOfVersion(strings.Split(version, "v")[1], ""))
-		} else {
-			installVersion(GetLatestVersionOfVersion(version, ""))
-		}
+		version = GetLatestVersionOfVersion(version, "")
 	} else {
 		panic("invalid version")
+	}
+
+	if utils.IsInstalled(version, "python") {
+		fmt.Println("Python version " + version + " is already installed")
+	} else {
+		installVersion(version)
 	}
 }

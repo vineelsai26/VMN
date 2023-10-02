@@ -19,29 +19,29 @@ export PATH="$(cat $HOME/.vmn/python-version):$PATH"
 setNodeVersion() {
 	if [ -f .vmnrc ]; then
 		echo "Found .vmnrc file"
-		if [ -f $HOME/.vmn/node/$(cat .vmnrc)/bin/node ]; then
-			export PATH="$HOME/.vmn/node/$(cat .vmnrc)/bin:$PATH"
+		if [ -f $HOME/.vmn/node/v$(ls "$HOME/.vmn/node" | grep "$(cat .vmnrc)" | cut -f2 -d"v")/bin/node ]; then
+			export PATH="$HOME/.vmn/node/v$(ls "$HOME/.vmn/node" | grep "$(cat .vmnrc)" | cut -f2 -d"v")/bin:$PATH"
 		else
 			vmn install $(cat .vmnrc)
-			export PATH="$HOME/.vmn/node/$(cat .vmnrc)/bin:$PATH"
+			export PATH="$HOME/.vmn/node/v$(ls "$HOME/.vmn/node" | grep "$(cat .vmnrc)" | cut -f2 -d"v")/bin:$PATH"
 		fi
 		echo "Using node version $(node --version)"
 	elif [ -f .nvmrc ]; then
 		echo "Found .nvmrc file"
-		if [ -f $HOME/.vmn/node/$(cat .nvmrc)/bin/node ]; then
-			export PATH="$HOME/.vmn/node/$(cat .nvmrc)/bin:$PATH"
+		if [ -f $HOME/.vmn/node/v$(ls "$HOME/.vmn/node" | grep "$(cat .nvmrc)" | cut -f2 -d"v")/bin/node ]; then
+			export PATH="$HOME/.vmn/node/v$(ls "$HOME/.vmn/node" | grep "$(cat .nvmrc)" | cut -f2 -d"v")/bin:$PATH"
 		else
 			vmn install $(cat .nvmrc)
-			export PATH="$HOME/.vmn/node/$(cat .nvmrc)/bin:$PATH"
+			export PATH="$HOME/.vmn/node/v$(ls "$HOME/.vmn/node" | grep "$(cat .nvmrc)" | cut -f2 -d"v")/bin:$PATH"
 		fi
 		echo "Using node version $(node --version)"
 	elif [ -f .node-version ]; then
 		echo "Found .node-version file"
-		if [ -f $HOME/.vmn/node/$(cat .node-version)/bin/node ]; then
-			export PATH="$HOME/.vmn/node/$(cat .node-version)/bin:$PATH"
+		if [ -f $HOME/.vmn/node/v$(ls "$HOME/.vmn/node" | grep "$(cat .node-version)" | cut -f2 -d"v")/bin/node ]; then
+			export PATH="$HOME/.vmn/node/v$(ls "$HOME/.vmn/node" | grep "$(cat .node-version)" | cut -f2 -d"v")/bin:$PATH"
 		else
 			vmn install $(cat .node-version)
-			export PATH="$HOME/.vmn/node/$(cat .node-version)/bin:$PATH"
+			export PATH="$HOME/.vmn/node/v$(ls "$HOME/.vmn/node" | grep "$(cat .node-version)" | cut -f2 -d"v")/bin:$PATH"
 		fi
 		echo "Using node version $(node --version)"
 	fi
@@ -50,13 +50,13 @@ setNodeVersion() {
 setPythonVersion() {
 	if [ -f .python-version ]; then
 		echo "Found .python-version file"
-		if [ -f $HOME/.vmn/python/$(cat .python-version)/bin/python ]; then
-			export PATH="$HOME/.vmn/python/$(cat .python-version)/bin:$PATH"
+		if [ -d $HOME/.vmn/python/v$(ls "$HOME/.vmn/python" | grep "$(cat .python-version)" | cut -f2 -d"v")/bin ]; then
+			export PATH="$HOME/.vmn/python/v$(ls "$HOME/.vmn/python" | grep "$(cat .python-version)" | cut -f2 -d"v")/bin:$PATH"
 		else
 			vmn python install $(cat .python-version)
-			export PATH="$HOME/.vmn/python/$(cat .python-version)/bin:$PATH"
+			export PATH="$HOME/.vmn/python/v$(ls "$HOME/.vmn/python" | grep "$(cat .python-version)" | cut -f2 -d"v")/bin:$PATH"
 		fi
-		echo "Using python version $(python --version)"
+		echo "Using python version v$(ls "$HOME/.vmn/python" | grep "$(cat .python-version)" | cut -f2 -d"v")"
 	fi
 }
 
