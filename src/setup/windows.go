@@ -4,6 +4,7 @@
 package setup
 
 import (
+	"fmt"
 	"io"
 	"os"
 	"os/exec"
@@ -11,7 +12,7 @@ import (
 	"strings"
 
 	"golang.org/x/sys/windows/registry"
-	"vineelsai.com/vmn/node"
+	"vineelsai.com/vmn/src/utils"
 )
 
 func Install() {
@@ -26,13 +27,13 @@ func Install() {
 	}
 	defer srcFile.Close()
 
-	if _, err := os.Stat(filepath.Join(node.GetHome(), ".vmn")); os.IsNotExist(err) {
-		if err := os.MkdirAll(filepath.Join(node.GetHome(), ".vmn"), 0755); err != nil {
+	if _, err := os.Stat(filepath.Join(utils.GetHome(), ".vmn")); os.IsNotExist(err) {
+		if err := os.MkdirAll(filepath.Join(utils.GetHome(), ".vmn"), 0755); err != nil {
 			panic(err)
 		}
 	}
 
-	destFile, err := os.Create(filepath.Join(node.GetHome(), ".vmn", "vmn.exe"))
+	destFile, err := os.Create(filepath.Join(utils.GetHome(), ".vmn", "vmn.exe"))
 	if err != nil {
 		panic(err)
 	}
@@ -56,14 +57,14 @@ func Install() {
 	var isPathVariableExists bool = false
 
 	for _, env := range strings.Split(userPath, ";") {
-		if env == filepath.Join(node.GetHome(), ".vmn") {
+		if env == filepath.Join(utils.GetHome(), ".vmn") {
 			isPathVariableExists = true
 			return
 		}
 	}
 
 	if !isPathVariableExists {
-		exec.Command("setx", "PATH", userPath+filepath.Join(node.GetHome(), ".vmn")).Run()
+		exec.Command("setx", "PATH", userPath+filepath.Join(utils.GetHome(), ".vmn")).Run()
 	}
 }
 
@@ -117,8 +118,8 @@ func SetPath(path string) {
 		}
 
 		shells := []string{
-			filepath.Join(GetHome(), "Documents\\WindowsPowerShell\\Microsoft.PowerShell_profile.ps1"),
-			filepath.Join(GetHome(), "Documents\\PowerShell\\Microsoft.PowerShell_profile.ps1"),
+			filepath.Join(utils.GetHome(), "Documents\\WindowsPowerShell\\Microsoft.PowerShell_profile.ps1"),
+			filepath.Join(utils.GetHome(), "Documents\\PowerShell\\Microsoft.PowerShell_profile.ps1"),
 		}
 
 		for _, shell := range shells {
