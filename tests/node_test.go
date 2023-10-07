@@ -31,7 +31,12 @@ func TestNode_20_Use(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if string(content) != filepath.Join(utils.GetHome(), ".vmn", "node", version, "bin") {
+	path, err := utils.GetVersionPath(version, "node")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if string(content) != path {
 		t.Fatal("invalid version")
 	}
 }
@@ -67,7 +72,12 @@ func TestNode_18_Use(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if string(content) != filepath.Join(utils.GetHome(), ".vmn", "node", version, "bin") {
+	path, err := utils.GetVersionPath(version, "node")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if string(content) != path {
 		t.Fatal("invalid version")
 	}
 }
@@ -103,7 +113,12 @@ func TestNode_16_Use(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if string(content) != filepath.Join(utils.GetHome(), ".vmn", "node", version, "bin") {
+	path, err := utils.GetVersionPath(version, "node")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if string(content) != path {
 		t.Fatal("invalid version")
 	}
 }
@@ -139,7 +154,12 @@ func TestNode_14_Use(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if string(content) != filepath.Join(utils.GetHome(), ".vmn", "node", version, "bin") {
+	path, err := utils.GetVersionPath(version, "node")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if string(content) != path {
 		t.Fatal("invalid version")
 	}
 }

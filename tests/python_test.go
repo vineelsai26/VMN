@@ -34,7 +34,12 @@ func TestPython_3_11_Use(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if string(content) != filepath.Join(utils.GetHome(), ".vmn", "python", "v"+version, "bin") {
+	path, err := utils.GetVersionPath("v"+version, "python")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if string(content) != path {
 		t.Fatal("invalid version")
 	}
 }
@@ -70,7 +75,12 @@ func TestPython_3_10_Use(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if string(content) != filepath.Join(utils.GetHome(), ".vmn", "python", "v"+version, "bin") {
+	path, err := utils.GetVersionPath("v"+version, "python")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if string(content) != path {
 		t.Fatal("invalid version")
 	}
 }
@@ -106,7 +116,12 @@ func TestPython_3_9_Use(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if string(content) != filepath.Join(utils.GetHome(), ".vmn", "python", "v"+version, "bin") {
+	path, err := utils.GetVersionPath("v"+version, "python")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if string(content) != path {
 		t.Fatal("invalid version")
 	}
 }
@@ -142,7 +157,12 @@ func TestPython_3_8_Use(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if string(content) != filepath.Join(utils.GetHome(), ".vmn", "python", "v"+version, "bin") {
+	path, err := utils.GetVersionPath("v"+version, "python")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if string(content) != path {
 		t.Fatal("invalid version")
 	}
 }
