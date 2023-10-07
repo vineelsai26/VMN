@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"os/exec"
 	"os/user"
 	"path/filepath"
 	"strings"
@@ -63,8 +62,6 @@ func Install() {
 }
 
 func SetPath(path string) {
-	exec.Command("export", "VMN_VERSION="+path).Run()
-
 	shells := []string{".bashrc", ".zshrc"}
 
 	home := utils.GetHome()

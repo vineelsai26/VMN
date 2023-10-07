@@ -43,10 +43,10 @@ func getDownloadURL(version string) (string, error) {
 	return "", fmt.Errorf("unsupported os or architecture")
 }
 
-func installVersion(version string) {
+func installVersion(version string) (string, error) {
 	fullURLFile, err := getDownloadURL(version)
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 	downloadDir := filepath.Join(utils.GetHome(), ".cache", "vmn")
 	downloadedFilePath := filepath.Join(downloadDir, strings.Split(fullURLFile, "/")[len(strings.Split(fullURLFile, "/"))-1])
@@ -56,29 +56,31 @@ func installVersion(version string) {
 
 	fileName, err := utils.Download(downloadDir, fullURLFile)
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 
 	// Unzip file
 	fmt.Println("Installing Node.js version " + version + "...")
 	if strings.HasSuffix(fileName, ".zip") {
 		if err := utils.Unzip(downloadedFilePath, utils.GetDestination(version, "node")); err != nil {
-			panic(err)
+			return "", err
 		}
 	} else if strings.HasSuffix(fileName, ".tar.gz") {
 		if err := utils.UnGzip(downloadedFilePath, utils.GetDestination(version, "node")); err != nil {
-			panic(err)
+			return "", err
 		}
 	}
 
 	// Delete file
 	fmt.Println("Cleaning up...")
 	if err := os.Remove(downloadedFilePath); err != nil {
-		panic(err)
+		return "", err
 	}
+
+	return "Node.js version " + version + " installed", nil
 }
 
-func Install(version string) {
+func Install(version string) (string, error) {
 	version = strings.TrimPrefix(version, "v")
 	if version == "latest" {
 		version = GetLatestVersion()
@@ -95,8 +97,8 @@ func Install(version string) {
 	}
 
 	if utils.IsInstalled(version, "node") {
-		fmt.Println("Node version " + version + " is already installed")
+		return "Node version " + version + " is already installed", nil
 	} else {
-		installVersion(version)
+		return installVersion(version)
 	}
 }

@@ -11,7 +11,7 @@ import (
 	"vineelsai.com/vmn/src/utils"
 )
 
-func installVersion(version string) {
+func installVersion(version string) (string, error) {
 	fullURLFile := "https://www.python.org/ftp/python/" + version + "/Python-" + version + ".tgz"
 	downloadDir := filepath.Join(utils.GetHome(), ".cache", "vmn")
 	buildDir := filepath.Join(downloadDir, "build", version)
@@ -21,14 +21,14 @@ func installVersion(version string) {
 	fmt.Println("Downloading Python from " + fullURLFile)
 	fileName, err := utils.Download(downloadDir, fullURLFile)
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 
 	// Unzip file
 	fmt.Println("Building Python version " + version + " from source...")
 	if strings.HasSuffix(fileName, ".tgz") {
 		if err := utils.UnGzip(downloadedFilePath, buildDir); err != nil {
-			panic(err)
+			return "", err
 		}
 
 		cmd := exec.Command(
@@ -38,11 +38,11 @@ func installVersion(version string) {
 		)
 		out, err := cmd.StdoutPipe()
 		if err != nil {
-			panic(err)
+			return "", err
 		}
 
 		if err = cmd.Start(); err != nil {
-			panic(err)
+			return "", err
 		}
 		for {
 			tmp := make([]byte, 1024)
@@ -57,14 +57,16 @@ func installVersion(version string) {
 	// Delete file
 	fmt.Println("Cleaning up...")
 	if err := os.Remove(downloadedFilePath); err != nil {
-		panic(err)
+		return "", err
 	}
 	if err := os.RemoveAll(buildDir); err != nil {
-		panic(err)
+		return "", err
 	}
+
+	return "Python version " + version + " installed successfully", nil
 }
 
-func Install(version string) {
+func Install(version string) (string, error) {
 	version = strings.TrimPrefix(version, "v")
 	if version == "latest" {
 		version = GetLatestVersion()
@@ -75,12 +77,12 @@ func Install(version string) {
 	} else if len(strings.Split(version, ".")) == 1 {
 		version = GetLatestVersionOfVersion(version, "")
 	} else {
-		panic("invalid version")
+		return "", fmt.Errorf("invalid version")
 	}
 
 	if utils.IsInstalled(version, "python") {
-		fmt.Println("Python version " + version + " is already installed")
+		return "Python version " + version + " is already installed", nil
 	} else {
-		installVersion(version)
+		return installVersion(version)
 	}
 }

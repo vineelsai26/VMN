@@ -10,21 +10,21 @@ import (
 	"vineelsai.com/vmn/src/utils"
 )
 
-func useVersion(version string) {
+func useVersion(version string) (string, error) {
 	path, err := utils.GetVersionPath("v"+version, "python")
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 
 	if _, err := os.Stat(filepath.Join(utils.GetHome(), ".vmn")); os.IsNotExist(err) {
 		if err := os.MkdirAll(filepath.Join(utils.GetHome(), ".vmn"), 0755); err != nil {
-			panic(err)
+			return "", err
 		}
 	}
 
 	f, err := os.OpenFile(filepath.Join(utils.GetHome(), ".vmn", "python-version"), os.O_RDWR|os.O_CREATE, 0755)
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 	defer f.Close()
 
@@ -35,14 +35,15 @@ func useVersion(version string) {
 	}
 
 	if _, err := os.Stat(path); err == nil {
-		fmt.Println("Setting VMN_VERSION to " + version + " ... ")
 		setup.SetPath(path)
 	} else {
-		fmt.Println("Python version " + version + " is not installed")
+		return "", fmt.Errorf("Python version " + version + " is not installed")
 	}
+
+	return version, nil
 }
 
-func Use(version string) {
+func Use(version string) (string, error) {
 	version = strings.TrimPrefix(version, "v")
 	if version == "latest" {
 		version = GetLatestVersion()
@@ -60,5 +61,5 @@ func Use(version string) {
 		fmt.Println("installing python version " + version + "...")
 		installVersion(version)
 	}
-	useVersion(version)
+	return useVersion(version)
 }

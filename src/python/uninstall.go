@@ -3,32 +3,40 @@ package python
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"vineelsai.com/vmn/src/utils"
 )
 
-func uninstallVersion(version string) {
+func uninstallVersion(version string) (string, error) {
 	if !utils.IsInstalled(version, "python") {
-		panic("Python version " + version + " is not installed")
+		return "", fmt.Errorf("Python version " + version + " is not installed")
 	}
 	fmt.Printf("Uninstalling Python %s\n", version)
 	path, err := utils.GetVersionPath(version, "python")
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 	os.RemoveAll(path)
+
+	return "Python version " + version + " uninstalled successfully", nil
 }
 
-func Uninstall(version string) {
+func Uninstall(version string) (string, error) {
+	version = strings.TrimPrefix(version, "v")
 	if version == "all" {
 		for _, version := range GetAllVersions() {
-			uninstallVersion(version)
+			if _, err := uninstallVersion(version); err != nil {
+				return "", err
+			}
 		}
+		return "All Python versions uninstalled successfully", nil
 	} else if version == "latest" {
-		uninstallVersion(GetLatestVersion())
+		version = "v" + GetLatestVersion()
 	} else if version != "" {
-		uninstallVersion(version)
+		version = "v" + version
 	} else {
-		panic("Invalid version")
+		return "", fmt.Errorf("invalid version")
 	}
+	return uninstallVersion(version)
 }
