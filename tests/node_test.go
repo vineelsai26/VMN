@@ -31,7 +31,7 @@ func TestNode_20_Use(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if string(content) != filepath.Join(utils.GetHome(), ".vmn", "node", "v"+version, "bin") {
+	if string(content) != filepath.Join(utils.GetHome(), ".vmn", "node", version, "bin") {
 		t.Fatal("invalid version")
 	}
 }
@@ -67,7 +67,7 @@ func TestNode_18_Use(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if string(content) != filepath.Join(utils.GetHome(), ".vmn", "node", "v"+version, "bin") {
+	if string(content) != filepath.Join(utils.GetHome(), ".vmn", "node", version, "bin") {
 		t.Fatal("invalid version")
 	}
 }
@@ -103,7 +103,7 @@ func TestNode_16_Use(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if string(content) != filepath.Join(utils.GetHome(), ".vmn", "node", "v"+version, "bin") {
+	if string(content) != filepath.Join(utils.GetHome(), ".vmn", "node", version, "bin") {
 		t.Fatal("invalid version")
 	}
 }
@@ -139,7 +139,7 @@ func TestNode_14_Use(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if string(content) != filepath.Join(utils.GetHome(), ".vmn", "node", "v"+version, "bin") {
+	if string(content) != filepath.Join(utils.GetHome(), ".vmn", "node", version, "bin") {
 		t.Fatal("invalid version")
 	}
 }

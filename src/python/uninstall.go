@@ -44,6 +44,7 @@ func Uninstall(version string) (string, error) {
 				}
 			}
 		}
+		return "Python version " + version + " uninstalled successfully", nil
 	} else {
 		return "", fmt.Errorf("invalid version")
 	}

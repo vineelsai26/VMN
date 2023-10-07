@@ -40,7 +40,7 @@ func useVersion(version string) (string, error) {
 		return "", fmt.Errorf("Node.js version " + version + " is not installed")
 	}
 
-	return "Node.js version " + version + " is set as default", nil
+	return version, nil
 }
 
 func Use(version string) (string, error) {
