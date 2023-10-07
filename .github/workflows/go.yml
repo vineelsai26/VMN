@@ -28,3 +28,45 @@ jobs:
 
       - name: Build for Windows
         run: GOOS=windows go build -v ./...
+
+  test_linux:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.21
+
+      - name: Test
+        run: go test -timeout 3h -v ./...
+
+  test_macos:
+    runs-on: macos-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.21
+
+      - name: Test
+        run: go test -timeout 3h -v ./...
+
+  test_windows:
+    runs-on: windows-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.21
+
+      - name: Test
+        run: go test -timeout 3h -v ./...

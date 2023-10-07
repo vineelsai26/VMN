@@ -104,25 +104,25 @@ func SetPath(path string) {
 		fmt.Println(string(out))
 	}
 
-	f, err := os.OpenFile("C:\\Users\\Vineel\\Documents\\WindowsPowerShell\\Microsoft.PowerShell_profile.ps1", os.O_RDONLY, 0755)
-	if err != nil {
-		panic(err)
+	shells := []string{
+		filepath.Join(utils.GetHome(), "Documents\\WindowsPowerShell\\Microsoft.PowerShell_profile.ps1"),
+		filepath.Join(utils.GetHome(), "Documents\\PowerShell\\Microsoft.PowerShell_profile.ps1"),
 	}
-	defer f.Close()
 
-	if _, err := f.Stat(); err == nil {
-		b := make([]byte, 1024)
-		n, err := f.Read(b)
+	for _, shell := range shells {
+		f, err := os.OpenFile(shell, os.O_RDONLY, 0755)
 		if err != nil {
-			panic(err)
+			continue
 		}
+		defer f.Close()
 
-		shells := []string{
-			filepath.Join(utils.GetHome(), "Documents\\WindowsPowerShell\\Microsoft.PowerShell_profile.ps1"),
-			filepath.Join(utils.GetHome(), "Documents\\PowerShell\\Microsoft.PowerShell_profile.ps1"),
-		}
+		if _, err := f.Stat(); err == nil {
+			b := make([]byte, 1024)
+			n, err := f.Read(b)
+			if err != nil {
+				panic(err)
+			}
 
-		for _, shell := range shells {
 			if !strings.Contains(string(b[:n]), "vmn env | Out-String | Invoke-Expression") {
 				file, err := os.OpenFile(shell, os.O_APPEND|os.O_WRONLY, 0755)
 				if err != nil {
