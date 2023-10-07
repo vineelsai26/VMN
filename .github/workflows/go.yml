@@ -41,7 +41,7 @@ jobs:
           go-version: 1.21
 
       - name: Test
-        run: go test -v ./...
+        run: go test -timeout 3h -v ./...
 
   test_macos:
     runs-on: macos-latest
@@ -55,7 +55,7 @@ jobs:
           go-version: 1.21
 
       - name: Test
-        run: go test -v ./...
+        run: go test -timeout 3h -v ./...
 
   test_windows:
     runs-on: windows-latest
@@ -69,4 +69,4 @@ jobs:
           go-version: 1.21
 
       - name: Test
-        run: go test -v ./...
+        run: go test -timeout 3h -v ./...

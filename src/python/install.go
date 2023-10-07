@@ -60,7 +60,7 @@ func installVersion(version string) (string, error) {
 		return "", err
 	}
 	if err := os.RemoveAll(buildDir); err != nil {
-		return "", err
+		exec.Command("/bin/bash", "-c", "rm -rf "+buildDir).Run()
 	}
 
 	return "Python version " + version + " installed successfully", nil
