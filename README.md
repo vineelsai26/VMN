@@ -56,34 +56,54 @@ sudo mv vmn /usr/local/bin
 
 - Add the extracted folder to your PATH
 
-## Usage
+## Usage Node.js
 
 ### Install a Node.js version
 
 ```bash
-vmn install lts
+vmn node install 20
 ```
 
 ### Use a Node.js version
 
 ```bash
-vmn use lts
+vmn node use 20
 ```
 
 ### List installed Node.js versions
 
 ```bash
-vmn list installed
+vmn node list installed
 ```
 
 ### Remove a Node.js version
 
 ```bash
-vmn uninstall lts
+vmn node uninstall 20
 ```
 
-### See all available commands
+## Usage Python
+
+### Install a Python version
 
 ```bash
-vmn help
+vmn python install 3.11
+```
+
+### Use a Python version
+
+```bash
+vmn python use 3.11
+```
+
+### List installed Python versions
+
+```bash
+vmn python list installed
+```
+
+### Remove a Python version
+
+```bash
+vmn python uninstall 3.11
 ```
