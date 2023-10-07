@@ -33,8 +33,17 @@ func Uninstall(version string) (string, error) {
 		return "All Python versions uninstalled successfully", nil
 	} else if version == "latest" {
 		version = "v" + GetLatestVersion()
-	} else if version != "" {
+	} else if len(strings.Split(version, ".")) == 3 {
 		version = "v" + version
+	} else if version != "" {
+		for _, ver := range GetInstalledVersions() {
+			if strings.HasPrefix(ver, version) {
+				version = "v" + ver
+				if _, err := uninstallVersion(version); err != nil {
+					return "", err
+				}
+			}
+		}
 	} else {
 		return "", fmt.Errorf("invalid version")
 	}
