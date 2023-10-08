@@ -6,31 +6,35 @@ name: Go
 on:
   push:
     branches: ["*"]
+    tags: "v*"
   pull_request:
     branches: ["main"]
 
+env:
+  GoVersion: 1.21
+
 jobs:
   build:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: 1.21
+          go-version: ${{ env.GoVersion }}
 
-      - name: Build for Linux
-        run: GOOS=linux go build -v ./...
+      - name: Build
+        run: go build -v ./...
 
-      - name: Build for macOS
-        run: GOOS=darwin go build -v ./...
-
-      - name: Build for Windows
-        run: GOOS=windows go build -v ./...
-
-  test_linux:
-    runs-on: ubuntu-latest
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     needs: build
     steps:
       - uses: actions/checkout@v4
@@ -38,35 +42,84 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: 1.21
+          go-version: ${{ env.GoVersion }}
 
       - name: Test
         run: go test -timeout 3h -v ./...
 
-  test_macos:
-    runs-on: macos-latest
-    needs: build
+  release:
+    name: "Tagged Release"
+    runs-on: "ubuntu-latest"
+    needs: test
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     steps:
       - uses: actions/checkout@v4
 
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: 1.21
+          go-version: ${{ env.GoVersion }}
 
-      - name: Test
-        run: go test -timeout 3h -v ./...
+      - name: Install zip
+        run: sudo apt install zip
 
-  test_windows:
-    runs-on: windows-latest
-    needs: build
-    steps:
-      - uses: actions/checkout@v4
+      - name: "Build"
+        env:
+          tag: ${{ github.ref_name }}
+        run: |
+          # Windows AMD64
+          env GOOS=windows GOARCH=amd64 go build -ldflags="-X 'vineelsai.com/vmn/version.Version=$tag'"
+          zip vmn-windows-amd64.zip vmn.exe
+          go clean
 
-      - name: Set up Go
-        uses: actions/setup-go@v4
+          # Windows ARM64
+          env GOOS=windows GOARCH=arm64 go build -ldflags="-X 'vineelsai.com/vmn/version.Version=$tag'"
+          zip vmn-windows-arm64.zip vmn.exe
+          go clean
+
+          # Linux AMD64
+          env GOOS=linux GOARCH=amd64 go build -ldflags="-X 'vineelsai.com/vmn/version.Version=$tag'"
+          tar -czvf vmn-linux-amd64.tar.gz vmn
+
+          # Debian AMD64
+          mkdir -p package/vmn-debian/usr/bin
+          mkdir -p package/vmn-debian/DEBIAN
+          cp vmn package/vmn-debian/usr/bin
+          release=$(echo "$tag" | awk '{gsub("v",""); print}')
+          printf "Package: vmn\nVersion: $release\nSection: custom\nPriority: optional\nArchitecture: amd64\nMaintainer: Vineel Sai\nDescription: Version Manager for Node\nHomepage: https://vineelsai.com\n" > package/vmn-debian/DEBIAN/control
+          dpkg-deb --build package/vmn-debian vmn-linux-amd64.deb
+          rm -rf package
+          go clean
+
+          # Linux ARM64
+          env GOOS=linux GOARCH=arm64 go build -ldflags="-X 'vineelsai.com/vmn/version.Version=$tag'"
+          tar -czvf vmn-linux-arm64.tar.gz vmn
+
+          # Debian ARM64
+          mkdir -p package/vmn-debian/usr/bin
+          mkdir -p package/vmn-debian/DEBIAN
+          cp vmn package/vmn-debian/usr/bin
+          release=$(echo "$tag" | awk '{gsub("v",""); print}')
+          printf "Package: vmn\nVersion: $release\nSection: custom\nPriority: optional\nArchitecture: arm64\nMaintainer: Vineel Sai\nDescription: Version Manager for Node\nHomepage: https://vineelsai.com\n" > package/vmn-debian/DEBIAN/control
+          dpkg-deb --build package/vmn-debian vmn-linux-arm64.deb
+          rm -rf package
+          go clean
+
+          # MacOS AMD64
+          env GOOS=darwin GOARCH=amd64 go build -ldflags="-X 'vineelsai.com/vmn/version.Version=$tag'"
+          tar -czvf vmn-macos-amd64.tar.gz vmn
+          go clean
+
+          # MacOS ARM64
+          env GOOS=darwin GOARCH=arm64 go build -ldflags="-X 'vineelsai.com/vmn/version.Version=$tag'"
+          tar -czvf vmn-macos-arm64.tar.gz vmn
+          go clean
+
+      - uses: "marvinpinto/action-automatic-releases@latest"
         with:
-          go-version: 1.21
-
-      - name: Test
-        run: go test -timeout 3h -v ./...
+          repo_token: "${{ secrets.RELEASE_TOKEN }}"
+          prerelease: false
+          files: |
+            *.tar.gz
+            *.zip
+            *.deb
