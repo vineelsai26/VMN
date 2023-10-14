@@ -34,7 +34,7 @@ func installVersion(version string) (string, error) {
 		cmd := exec.Command(
 			"/bin/bash",
 			"-c",
-			"cd "+buildDir+" && ./configure --enable-shared --prefix="+utils.GetDestination("v"+version, "python")+" --enable-optimizations && make -j"+strconv.Itoa(utils.GetCPUCount())+" && sudo make altinstall",
+			"cd "+buildDir+" && ./configure --enable-shared --prefix="+utils.GetDestination("v"+version, "python")+" --enable-optimizations && make -j"+strconv.Itoa(utils.GetCPUCount())+" && make altinstall",
 		)
 		out, err := cmd.StdoutPipe()
 		if err != nil {
@@ -52,11 +52,6 @@ func installVersion(version string) (string, error) {
 				break
 			}
 		}
-	}
-
-	// Change ownership
-	if err := os.Chown(utils.GetDestination("v"+version, "python"), os.Getuid(), os.Getgid()); err != nil {
-		return "", err
 	}
 
 	// symlink python3.x to python and python3
