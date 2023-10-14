@@ -3,6 +3,7 @@ package python
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"strings"
 
 	"vineelsai.com/vmn/src/utils"
@@ -15,7 +16,7 @@ func uninstallVersion(version string) (string, error) {
 	fmt.Printf("Uninstalling Python %s\n", version)
 	path := utils.GetDestination(version, "python")
 	if err := os.RemoveAll(strings.TrimSpace(path)); err != nil {
-		return "", err
+		exec.Command("/bin/bash", "-c", "rm -rf "+path).Run()
 	}
 
 	return "Python version " + version + " uninstalled successfully", nil
