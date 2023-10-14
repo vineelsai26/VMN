@@ -34,7 +34,7 @@ func installVersion(version string) (string, error) {
 		cmd := exec.Command(
 			"/bin/bash",
 			"-c",
-			"cd "+buildDir+" && ./configure --prefix="+utils.GetDestination("v"+version, "python")+" --enable-optimizations && make -j"+strconv.Itoa(utils.GetCPUCount())+" && sudo make altinstall",
+			"cd "+buildDir+" && ./configure --enable-shared --prefix="+utils.GetDestination("v"+version, "python")+" --enable-optimizations && make -j"+strconv.Itoa(utils.GetCPUCount())+" && sudo make altinstall",
 		)
 		out, err := cmd.StdoutPipe()
 		if err != nil {
@@ -51,6 +51,42 @@ func installVersion(version string) (string, error) {
 			if err != nil {
 				break
 			}
+		}
+	}
+
+	// Change ownership
+	if err := os.Chown(utils.GetDestination("v"+version, "python"), os.Getuid(), os.Getgid()); err != nil {
+		return "", err
+	}
+
+	// symlink python3.x to python and python3
+	fmt.Println("Symlinking python3.x to python and python3...")
+	pythonBinaryPath, err := utils.GetBinaryPath(version, "python")
+	if err != nil {
+		return "", err
+	}
+	pythonSymlinkPath, err := utils.GetVersionPath("v"+version, "python")
+	if err != nil {
+		return "", err
+	}
+	pythonSymlinks := []string{"python", "python3"}
+
+	for _, symlink := range pythonSymlinks {
+		if err := os.Symlink(pythonBinaryPath, filepath.Join(pythonSymlinkPath, symlink)); err != nil {
+			return "", err
+		}
+	}
+
+	// symlink pip3.x to pip and pip3
+	pipBinaryPath, err := utils.GetBinaryPath(version, "pip")
+	if err != nil {
+		return "", err
+	}
+	pipSymlinks := []string{"pip", "pip3"}
+
+	for _, symlink := range pipSymlinks {
+		if err := os.Symlink(pipBinaryPath, filepath.Join(pythonSymlinkPath, symlink)); err != nil {
+			return "", err
 		}
 	}
 

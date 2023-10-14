@@ -13,11 +13,10 @@ func uninstallVersion(version string) (string, error) {
 		return "", fmt.Errorf("Python version " + version + " is not installed")
 	}
 	fmt.Printf("Uninstalling Python %s\n", version)
-	path, err := utils.GetVersionPath(version, "python")
-	if err != nil {
+	path := utils.GetDestination(version, "python")
+	if err := os.RemoveAll(strings.TrimSpace(path)); err != nil {
 		return "", err
 	}
-	os.RemoveAll(path)
 
 	return "Python version " + version + " uninstalled successfully", nil
 }

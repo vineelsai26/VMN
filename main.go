@@ -72,13 +72,25 @@ func handleNodeVersionManagement(args []string) {
 	if args[0] == "help" {
 		nodeHelp()
 	} else if args[0] == "install" {
-		node.Install(args[1])
+		msg, err := node.Install(args[1])
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println(msg)
 	} else if args[0] == "use" {
-		node.Use(args[1])
+		msg, err := node.Use(args[1])
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println(msg)
 	} else if args[0] == "list" {
 		node.List(args[1])
 	} else if args[0] == "uninstall" {
-		node.Uninstall(args[1])
+		msg, err := node.Uninstall(args[1])
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println(msg)
 	} else if args[0] == "env" {
 		shell.RunShellSpecificCommands(args)
 	} else {
@@ -94,13 +106,25 @@ func handlePythonVersionManagement(args []string) {
 	if args[0] == "help" {
 		pythonHelp()
 	} else if args[0] == "install" {
-		python.Install(args[1])
+		msg, err := python.Install(args[1])
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println(msg)
 	} else if args[0] == "use" {
-		python.Use(args[1])
+		msg, err := python.Use(args[1])
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println(msg)
 	} else if args[0] == "list" {
 		python.List(args[1])
 	} else if args[0] == "uninstall" {
-		python.Uninstall(args[1])
+		msg, err := python.Uninstall(args[1])
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println(msg)
 	} else if args[0] == "env" {
 		shell.RunShellSpecificCommands(args)
 	} else {

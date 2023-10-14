@@ -42,6 +42,10 @@ func GetBinaryPath(version string, pl string) (string, error) {
 	if pl == "python" {
 		binaryName = "python" + strings.Split(version, ".")[0] + "." + strings.Split(version, ".")[1]
 	}
+	if pl == "pip" {
+		binaryName = "pip" + strings.Split(version, ".")[0] + "." + strings.Split(version, ".")[1]
+		pl = "python"
+	}
 	if runtime.GOOS == "windows" {
 		return filepath.Join(GetDestination("v"+version, pl), binaryName+".exe"), nil
 	} else if runtime.GOOS == "linux" {
