@@ -22,7 +22,7 @@ setNodeVersion() {
 		if [ -f $HOME/.vmn/node/v$(ls "$HOME/.vmn/node" | grep "$(cat .vmnrc)" | tail -1 | cut -f2 -d"v")/bin/node ]; then
 			export PATH="$HOME/.vmn/node/v$(ls "$HOME/.vmn/node" | grep "$(cat .vmnrc)" | tail -1 | cut -f2 -d"v")/bin:$PATH"
 		else
-			vmn install $(cat .vmnrc)
+			vmn node install $(cat .vmnrc)
 			export PATH="$HOME/.vmn/node/v$(ls "$HOME/.vmn/node" | grep "$(cat .vmnrc)" | tail -1 | cut -f2 -d"v")/bin:$PATH"
 		fi
 		echo "Using node version $(node --version)"
@@ -31,7 +31,7 @@ setNodeVersion() {
 		if [ -f $HOME/.vmn/node/v$(ls "$HOME/.vmn/node" | grep "$(cat .nvmrc)" | tail -1 | cut -f2 -d"v")/bin/node ]; then
 			export PATH="$HOME/.vmn/node/v$(ls "$HOME/.vmn/node" | grep "$(cat .nvmrc)" | tail -1 | cut -f2 -d"v")/bin:$PATH"
 		else
-			vmn install $(cat .nvmrc)
+			vmn node install $(cat .nvmrc)
 			export PATH="$HOME/.vmn/node/v$(ls "$HOME/.vmn/node" | grep "$(cat .nvmrc)" | tail -1 | cut -f2 -d"v")/bin:$PATH"
 		fi
 		echo "Using node version $(node --version)"
@@ -40,7 +40,7 @@ setNodeVersion() {
 		if [ -f $HOME/.vmn/node/v$(ls "$HOME/.vmn/node" | grep "$(cat .node-version)" | tail -1 | cut -f2 -d"v")/bin/node ]; then
 			export PATH="$HOME/.vmn/node/v$(ls "$HOME/.vmn/node" | grep "$(cat .node-version)" | tail -1 | cut -f2 -d"v")/bin:$PATH"
 		else
-			vmn install $(cat .node-version)
+			vmn node install $(cat .node-version)
 			export PATH="$HOME/.vmn/node/v$(ls "$HOME/.vmn/node" | grep "$(cat .node-version)" | tail -1 | cut -f2 -d"v")/bin:$PATH"
 		fi
 		echo "Using node version $(node --version)"
