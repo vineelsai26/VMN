@@ -59,7 +59,7 @@ func Use(version string) (string, error) {
 
 	if !utils.IsInstalled(version, "python") {
 		fmt.Println("installing python version " + version + "...")
-		installVersion(version)
+		installVersion(version, false, "")
 	}
 	return useVersion(version)
 }

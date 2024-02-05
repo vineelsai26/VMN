@@ -11,7 +11,7 @@ import (
 	"vineelsai.com/vmn/src/utils"
 )
 
-func installVersion(version string) (string, error) {
+func installPythonFromSource(version string, compile_flags_override string) (string, error) {
 	fullURLFile := "https://www.python.org/ftp/python/" + version + "/Python-" + version + ".tgz"
 	downloadDir := filepath.Join(utils.GetHome(), ".cache", "vmn")
 	buildDir := filepath.Join(downloadDir, "build", version)
@@ -31,10 +31,16 @@ func installVersion(version string) (string, error) {
 			return "", err
 		}
 
+		build_flags := "--enable-optimizations --enable-shared --with-computed-gotos --with-lto --enable-ipv6 --enable-loadable-sqlite-extensions"
+
+		if compile_flags_override != "" {
+			build_flags = compile_flags_override
+		}
+
 		cmd := exec.Command(
 			"/bin/bash",
 			"-c",
-			"cd "+buildDir+" && ./configure --enable-shared --prefix="+utils.GetDestination("v"+version, "python")+" --enable-optimizations && make -j"+strconv.Itoa(utils.GetCPUCount())+" && make altinstall",
+			"cd "+buildDir+" && ./configure --prefix="+utils.GetDestination("v"+version, "python")+" "+build_flags+" && make -j"+strconv.Itoa(utils.GetCPUCount())+" && make altinstall",
 		)
 		out, err := cmd.StdoutPipe()
 		if err != nil {
@@ -97,7 +103,19 @@ func installVersion(version string) (string, error) {
 	return "Python version " + version + " installed successfully", nil
 }
 
-func Install(version string) (string, error) {
+func installPython(version string) (string, error) {
+	return "", fmt.Errorf("not implemented")
+}
+
+func installVersion(version string, compile bool, compile_flags_override string) (string, error) {
+	if compile {
+		return installPythonFromSource(version, compile_flags_override)
+	} else {
+		return installPython(version)
+	}
+}
+
+func Install(version string, compile bool, compile_flags_override string) (string, error) {
 	version = strings.TrimPrefix(version, "v")
 	if version == "latest" {
 		version = GetLatestVersion()
@@ -114,6 +132,6 @@ func Install(version string) (string, error) {
 	if utils.IsInstalled(version, "python") {
 		return "Python version " + version + " is already installed", nil
 	} else {
-		return installVersion(version)
+		return installVersion(version, compile, compile_flags_override)
 	}
 }

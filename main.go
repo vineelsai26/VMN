@@ -1,8 +1,8 @@
 package main
 
 import (
+	"flag"
 	"fmt"
-	"os"
 	"runtime"
 
 	"vineelsai.com/vmn/src"
@@ -14,7 +14,7 @@ import (
 
 func help() {
 	fmt.Println(
-		`Usage: vmn <runtime> <command> [version]
+		`Usage: vmn <flags> <runtime> <command> [version]
 use vmn <runtime> help for more information
 runtimes currently supported: node, python`)
 }
@@ -98,7 +98,7 @@ func handleNodeVersionManagement(args []string) {
 	}
 }
 
-func handlePythonVersionManagement(args []string) {
+func handlePythonVersionManagement(args []string, compile bool, compile_flags_override string) {
 	if runtime.GOOS == "windows" {
 		panic("Python version management is not supported on Windows")
 	}
@@ -106,7 +106,7 @@ func handlePythonVersionManagement(args []string) {
 	if args[0] == "help" {
 		pythonHelp()
 	} else if args[0] == "install" {
-		msg, err := python.Install(args[1])
+		msg, err := python.Install(args[1], compile, compile_flags_override)
 		if err != nil {
 			panic(err)
 		}
@@ -133,7 +133,15 @@ func handlePythonVersionManagement(args []string) {
 }
 
 func main() {
-	args := os.Args[1:]
+	// CLI Flags
+	compile := flag.Bool("compile", false, "Compile Python from source")
+	compile_flags_override := flag.String("compile-flags-override", "", "Override compile flags for Python")
+
+	// Parse flags
+	flag.Parse()
+
+	// Get clean arguments after flags are parsed
+	args := flag.Args()
 
 	if len(args) == 0 {
 		help()
@@ -155,16 +163,16 @@ func main() {
 		if args[0] == "env" {
 			shell.RunShellSpecificCommands(args)
 		} else if args[0] == "python" {
-			handlePythonVersionManagement(args)
+			handlePythonVersionManagement(args, *compile, *compile_flags_override)
 		} else if args[0] == "node" {
 			handleNodeVersionManagement(args[1:])
 		} else {
 			handleNodeVersionManagement(args[1:])
 		}
-	} else if len(args) == 3 {
+	} else if len(args) >= 3 {
 		// python or node
 		if args[0] == "python" {
-			handlePythonVersionManagement(args[1:])
+			handlePythonVersionManagement(args[1:], *compile, *compile_flags_override)
 		} else if args[0] == "node" {
 			handleNodeVersionManagement(args[1:])
 		} else {
