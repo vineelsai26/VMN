@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 )
@@ -85,8 +86,6 @@ func UnGzip(src string, dest string) error {
 		return err
 	}
 
-	fmt.Println(dest)
-
 	if _, err := os.Stat(dest); os.IsNotExist(err) {
 		if err := os.MkdirAll(dest, 0755); err != nil {
 			return err
@@ -95,7 +94,34 @@ func UnGzip(src string, dest string) error {
 
 	gzr, err := gzip.NewReader(r)
 	if err != nil {
-		return err
+		r.Close()
+		// Check if make command is available
+		extract_cmd := exec.Command(
+			"tar",
+			"-xvf",
+			src,
+			"-C",
+			dest,
+		)
+
+		fmt.Println(src, dest)
+		out, err := extract_cmd.StdoutPipe()
+		if err != nil {
+			return err
+		}
+
+		if err = extract_cmd.Start(); err != nil {
+			return fmt.Errorf("unable to extract the file")
+		}
+		for {
+			tmp := make([]byte, 1024)
+			_, err := out.Read(tmp)
+			fmt.Print(string(tmp))
+			if err != nil {
+				break
+			}
+		}
+		return nil
 	}
 	defer gzr.Close()
 

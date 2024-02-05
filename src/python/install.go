@@ -119,7 +119,36 @@ func installPythonFromSource(version string, compile_flags_override string) (str
 }
 
 func installPython(version string) (string, error) {
-	return "", fmt.Errorf("not implemented")
+	fullURLFile := "http://localhost:8000/linux/generic/packages/python-" + strings.TrimLeft(version, "v") + ".tar.gz"
+	downloadDir := filepath.Join(utils.GetHome(), ".cache", "vmn")
+	downloadedFilePath := filepath.Join(downloadDir, strings.Split(fullURLFile, "/")[len(strings.Split(fullURLFile, "/"))-1])
+
+	// Download file
+	fmt.Println("Downloading Python from " + fullURLFile)
+	fileName, err := utils.Download(downloadDir, fullURLFile)
+	if err != nil {
+		return "", err
+	}
+
+	// Unzip file
+	fmt.Println("Installing Python version " + version + "...")
+	if strings.HasSuffix(fileName, ".zip") {
+		if err := utils.Unzip(downloadedFilePath, utils.GetDestination(version, "python")); err != nil {
+			return "", err
+		}
+	} else if strings.HasSuffix(fileName, ".tar.gz") {
+		if err := utils.UnGzip(downloadedFilePath, utils.GetDestination(version, "python")); err != nil {
+			return "", err
+		}
+	}
+
+	// Delete file
+	fmt.Println("Cleaning up...")
+	if err := os.Remove(downloadedFilePath); err != nil {
+		return "", err
+	}
+
+	return "Python version " + version + " installed", nil
 }
 
 func installVersion(version string, compile bool, compile_flags_override string) (string, error) {

@@ -48,7 +48,7 @@ func Use(version string) (string, error) {
 	if version == "latest" {
 		version = GetLatestVersion()
 	} else if len(strings.Split(version, ".")) == 3 {
-		version = "v" + version
+		version = strings.TrimPrefix(version, "v")
 	} else if len(strings.Split(version, ".")) == 2 {
 		version = GetLatestVersionOfVersion(strings.Split(version, ".")[0], strings.Split(version, ".")[1])
 	} else if len(strings.Split(version, ".")) == 1 {
