@@ -17,6 +17,19 @@ func installPythonFromSource(version string, compile_flags_override string) (str
 	buildDir := filepath.Join(downloadDir, "build", version)
 	downloadedFilePath := filepath.Join(downloadDir, strings.Split(fullURLFile, "/")[len(strings.Split(fullURLFile, "/"))-1])
 
+	// Check if make command is available
+	make_cmd := exec.Command(
+		"make",
+	)
+	_, err := make_cmd.StdoutPipe()
+	if err != nil {
+		return "", err
+	}
+
+	if err = make_cmd.Start(); err != nil {
+		return "", fmt.Errorf("make command not found. Please install 'make' and try again")
+	}
+
 	// Download file
 	fmt.Println("Downloading Python from " + fullURLFile)
 	fileName, err := utils.Download(downloadDir, fullURLFile)
@@ -36,11 +49,13 @@ func installPythonFromSource(version string, compile_flags_override string) (str
 		if compile_flags_override != "" {
 			build_flags = compile_flags_override
 		}
+		build_install_command := "./configure --prefix=" + utils.GetDestination("v"+version, "python") + " " + build_flags + " && make -j" + strconv.Itoa(utils.GetCPUCount()) + " && make altinstall"
 
+		fmt.Println(build_install_command)
 		cmd := exec.Command(
 			"/bin/bash",
 			"-c",
-			"cd "+buildDir+" && ./configure --prefix="+utils.GetDestination("v"+version, "python")+" "+build_flags+" && make -j"+strconv.Itoa(utils.GetCPUCount())+" && make altinstall",
+			"cd "+buildDir+" && "+build_install_command,
 		)
 		out, err := cmd.StdoutPipe()
 		if err != nil {
