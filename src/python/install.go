@@ -44,7 +44,7 @@ func installPythonFromSource(version string, compile_flags_override string) (str
 			return "", err
 		}
 
-		build_flags := "--enable-optimizations --enable-shared --with-computed-gotos --with-lto --enable-ipv6 --enable-loadable-sqlite-extensions"
+		build_flags := "--enable-optimizations --enable-loadable-sqlite-extensions"
 
 		if compile_flags_override != "" {
 			build_flags = compile_flags_override
