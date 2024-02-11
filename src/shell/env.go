@@ -17,11 +17,11 @@ export PATH="$(cat $HOME/.vmn/node-version):$PATH"
 export PATH="$(cat $HOME/.vmn/python-version):$PATH"
 
 function vmn {
-	builtin vmn "$@"
-	if [ "$1" == "node" ]
+	$(which vmn) "$@"
+	if [[ "$1" == "node" ]]
 	then
 		export PATH="$(cat $HOME/.vmn/node-version):$PATH"
-	elif [ "$1" == "python" ]
+	elif [[ "$1" == "python" ]]
 	then
 		export PATH="$(cat $HOME/.vmn/python-version):$PATH"
 	fi
