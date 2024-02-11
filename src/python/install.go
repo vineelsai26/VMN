@@ -11,11 +11,24 @@ import (
 	"vineelsai.com/vmn/src/utils"
 )
 
-func installVersion(version string) (string, error) {
+func installPythonFromSource(version string, compile_flags_override string) (string, error) {
 	fullURLFile := "https://www.python.org/ftp/python/" + version + "/Python-" + version + ".tgz"
 	downloadDir := filepath.Join(utils.GetHome(), ".cache", "vmn")
 	buildDir := filepath.Join(downloadDir, "build", version)
 	downloadedFilePath := filepath.Join(downloadDir, strings.Split(fullURLFile, "/")[len(strings.Split(fullURLFile, "/"))-1])
+
+	// Check if make command is available
+	make_cmd := exec.Command(
+		"make",
+	)
+	_, err := make_cmd.StdoutPipe()
+	if err != nil {
+		return "", err
+	}
+
+	if err = make_cmd.Start(); err != nil {
+		return "", fmt.Errorf("make command not found. Please install 'make' and try again")
+	}
 
 	// Download file
 	fmt.Println("Downloading Python from " + fullURLFile)
@@ -31,10 +44,18 @@ func installVersion(version string) (string, error) {
 			return "", err
 		}
 
+		build_flags := "--enable-optimizations"
+
+		if compile_flags_override != "" {
+			build_flags = compile_flags_override
+		}
+		build_install_command := "./configure --prefix=" + utils.GetDestination("v"+version, "python") + " " + build_flags + " && make -j" + strconv.Itoa(utils.GetCPUCount()) + " && make altinstall"
+
+		fmt.Println(build_install_command)
 		cmd := exec.Command(
 			"/bin/bash",
 			"-c",
-			"cd "+buildDir+" && ./configure --enable-shared --prefix="+utils.GetDestination("v"+version, "python")+" --enable-optimizations && make -j"+strconv.Itoa(utils.GetCPUCount())+" && make altinstall",
+			"cd "+buildDir+" && "+build_install_command,
 		)
 		out, err := cmd.StdoutPipe()
 		if err != nil {
@@ -97,7 +118,48 @@ func installVersion(version string) (string, error) {
 	return "Python version " + version + " installed successfully", nil
 }
 
-func Install(version string) (string, error) {
+func installPython(version string) (string, error) {
+	fullURLFile := "https://repo.vineelsai.com/linux/generic/packages/python-" + strings.TrimLeft(version, "v") + ".tar.gz"
+	downloadDir := filepath.Join(utils.GetHome(), ".cache", "vmn")
+	downloadedFilePath := filepath.Join(downloadDir, strings.Split(fullURLFile, "/")[len(strings.Split(fullURLFile, "/"))-1])
+
+	// Download file
+	fmt.Println("Downloading Python from " + fullURLFile)
+	fileName, err := utils.Download(downloadDir, fullURLFile)
+	if err != nil {
+		return "", err
+	}
+
+	// Unzip file
+	fmt.Println("Installing Python version " + version + "...")
+	if strings.HasSuffix(fileName, ".zip") {
+		if err := utils.Unzip(downloadedFilePath, utils.GetDestination(version, "python")); err != nil {
+			return "", err
+		}
+	} else if strings.HasSuffix(fileName, ".tar.gz") {
+		if err := utils.UnGzip(downloadedFilePath, utils.GetDestination(version, "python")); err != nil {
+			return "", err
+		}
+	}
+
+	// Delete file
+	fmt.Println("Cleaning up...")
+	if err := os.Remove(downloadedFilePath); err != nil {
+		return "", err
+	}
+
+	return "Python version " + version + " installed", nil
+}
+
+func installVersion(version string, compile bool, compile_flags_override string) (string, error) {
+	if compile {
+		return installPythonFromSource(version, compile_flags_override)
+	} else {
+		return installPython(version)
+	}
+}
+
+func Install(version string, compile bool, compile_flags_override string) (string, error) {
 	version = strings.TrimPrefix(version, "v")
 	if version == "latest" {
 		version = GetLatestVersion()
@@ -114,6 +176,6 @@ func Install(version string) (string, error) {
 	if utils.IsInstalled(version, "python") {
 		return "Python version " + version + " is already installed", nil
 	} else {
-		return installVersion(version)
+		return installVersion(version, compile, compile_flags_override)
 	}
 }

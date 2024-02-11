@@ -16,28 +16,45 @@ func setEnvForPosixShell() {
 export PATH="$(cat $HOME/.vmn/node-version):$PATH"
 export PATH="$(cat $HOME/.vmn/python-version):$PATH"
 
-setNodeVersion() {
-	if [ -f .vmnrc ]; then
+function vmn {
+	$(which vmn) "$@"
+	if [[ "$1" == "node" ]]
+	then
+		export PATH="$(cat $HOME/.vmn/node-version):$PATH"
+	elif [[ "$1" == "python" ]]
+	then
+		export PATH="$(cat $HOME/.vmn/python-version):$PATH"
+	fi
+}
+
+function setNodeVersion {
+	if [ -f .vmnrc ]
+	then
 		echo "Found .vmnrc file"
-		if [ -f $HOME/.vmn/node/v$(ls "$HOME/.vmn/node" | grep "$(cat .vmnrc)" | tail -1 | cut -f2 -d"v")/bin/node ]; then
+		if [ -f $HOME/.vmn/node/v$(ls "$HOME/.vmn/node" | grep "$(cat .vmnrc)" | tail -1 | cut -f2 -d"v")/bin/node ]
+		then
 			export PATH="$HOME/.vmn/node/v$(ls "$HOME/.vmn/node" | grep "$(cat .vmnrc)" | tail -1 | cut -f2 -d"v")/bin:$PATH"
 		else
 			vmn node install $(cat .vmnrc)
 			export PATH="$HOME/.vmn/node/v$(ls "$HOME/.vmn/node" | grep "$(cat .vmnrc)" | tail -1 | cut -f2 -d"v")/bin:$PATH"
 		fi
 		echo "Using node version $(node --version)"
-	elif [ -f .nvmrc ]; then
+	elif [ -f .nvmrc ]
+	then
 		echo "Found .nvmrc file"
-		if [ -f $HOME/.vmn/node/v$(ls "$HOME/.vmn/node" | grep "$(cat .nvmrc)" | tail -1 | cut -f2 -d"v")/bin/node ]; then
+		if [ -f $HOME/.vmn/node/v$(ls "$HOME/.vmn/node" | grep "$(cat .nvmrc)" | tail -1 | cut -f2 -d"v")/bin/node ]
+		then
 			export PATH="$HOME/.vmn/node/v$(ls "$HOME/.vmn/node" | grep "$(cat .nvmrc)" | tail -1 | cut -f2 -d"v")/bin:$PATH"
 		else
 			vmn node install $(cat .nvmrc)
 			export PATH="$HOME/.vmn/node/v$(ls "$HOME/.vmn/node" | grep "$(cat .nvmrc)" | tail -1 | cut -f2 -d"v")/bin:$PATH"
 		fi
 		echo "Using node version $(node --version)"
-	elif [ -f .node-version ]; then
+	elif [ -f .node-version ]
+	then
 		echo "Found .node-version file"
-		if [ -f $HOME/.vmn/node/v$(ls "$HOME/.vmn/node" | grep "$(cat .node-version)" | tail -1 | cut -f2 -d"v")/bin/node ]; then
+		if [ -f $HOME/.vmn/node/v$(ls "$HOME/.vmn/node" | grep "$(cat .node-version)" | tail -1 | cut -f2 -d"v")/bin/node ]
+		then
 			export PATH="$HOME/.vmn/node/v$(ls "$HOME/.vmn/node" | grep "$(cat .node-version)" | tail -1 | cut -f2 -d"v")/bin:$PATH"
 		else
 			vmn node install $(cat .node-version)
@@ -47,10 +64,12 @@ setNodeVersion() {
 	fi
 }
 
-setPythonVersion() {
-	if [ -f .python-version ]; then
+function setPythonVersion {
+	if [ -f .python-version ]
+	then
 		echo "Found .python-version file"
-		if [ -d $HOME/.vmn/python/v$(ls "$HOME/.vmn/python" | grep "$(cat .python-version)" | tail -1 | cut -f2 -d"v")/bin ]; then
+		if [ -d $HOME/.vmn/python/v$(ls "$HOME/.vmn/python" | grep "$(cat .python-version)" | tail -1 | cut -f2 -d"v")/bin ]
+		then
 			export PATH="$HOME/.vmn/python/v$(ls "$HOME/.vmn/python" | grep "$(cat .python-version)" | tail -1 | cut -f2 -d"v")/bin:$PATH"
 		else
 			vmn python install $(cat .python-version)
@@ -60,7 +79,7 @@ setPythonVersion() {
 	fi
 }
 
-cd() {
+function cd {
 	builtin cd "$@"
 	setNodeVersion
 	setPythonVersion
@@ -111,8 +130,6 @@ func PrintEnv() {
 		fmt.Println("eval \"`vmn env zsh`\"")
 	} else if runtime.GOOS == "windows" {
 		fmt.Println("vmn env powershell | Out-String | Invoke-Expression")
-	} else {
-		fmt.Println("Not implemented for this OS")
 	}
 }
 
@@ -159,11 +176,9 @@ func RunShellSpecificCommands(args []string) {
 
 	}
 
-	if args[1] == "zsh" || args[1] == "bash" {
-		setEnvForPosixShell()
-	} else if args[1] == "powershell" {
+	if args[1] == "powershell" {
 		setEnvForPowershell()
 	} else {
-		fmt.Println("Not implemented for this shell")
+		setEnvForPosixShell()
 	}
 }
