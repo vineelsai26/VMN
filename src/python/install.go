@@ -119,7 +119,7 @@ func installPythonFromSource(version string, compile_flags_override string) (str
 }
 
 func installPython(version string) (string, error) {
-	fullURLFile := "http://localhost:8000/linux/generic/packages/python-" + strings.TrimLeft(version, "v") + ".tar.gz"
+	fullURLFile := "https://repo.vineelsai.com/linux/generic/packages/python-" + strings.TrimLeft(version, "v") + ".tar.gz"
 	downloadDir := filepath.Join(utils.GetHome(), ".cache", "vmn")
 	downloadedFilePath := filepath.Join(downloadDir, strings.Split(fullURLFile, "/")[len(strings.Split(fullURLFile, "/"))-1])
 
