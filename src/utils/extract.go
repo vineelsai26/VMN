@@ -71,6 +71,9 @@ func Unzip(src string, dest string) error {
 	}
 
 	for _, f := range r.File[1:] {
+		if strings.Contains(f.Name, "..") {
+			continue
+		}
 		err := extractAndWriteFile(f)
 		if err != nil {
 			return err
@@ -141,7 +144,7 @@ func UnGzip(src string, dest string) error {
 			return err
 
 		// if the header is nil, just skip it (not sure how this happens)
-		case header == nil:
+		case header == nil || strings.Contains(header.Name, ".."):
 			continue
 		}
 
