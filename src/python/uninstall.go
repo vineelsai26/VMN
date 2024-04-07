@@ -16,7 +16,7 @@ func uninstallVersion(version string) (string, error) {
 	fmt.Printf("Uninstalling Python %s\n", version)
 	path := utils.GetDestination(version, "python")
 	if err := os.RemoveAll(strings.TrimSpace(path)); err != nil {
-		exec.Command("/bin/bash", "-c", "rm -rf "+path).Run()
+		exec.Command("bash", "-c", "rm -rf "+path).Run()
 	}
 
 	return "Python version " + version + " uninstalled successfully", nil

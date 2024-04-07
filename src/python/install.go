@@ -53,7 +53,7 @@ func installPythonFromSource(version string, compile_flags_override string) (str
 
 		fmt.Println(build_install_command)
 		cmd := exec.Command(
-			"/bin/bash",
+			"bash",
 			"-c",
 			"cd "+buildDir+" && "+build_install_command,
 		)
@@ -112,7 +112,7 @@ func installPythonFromSource(version string, compile_flags_override string) (str
 		return "", err
 	}
 	if err := os.RemoveAll(buildDir); err != nil {
-		exec.Command("/bin/bash", "-c", "rm -rf "+buildDir).Run()
+		exec.Command("bash", "-c", "rm -rf "+buildDir).Run()
 	}
 
 	return "Python version " + version + " installed successfully", nil

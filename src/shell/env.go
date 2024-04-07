@@ -17,7 +17,7 @@ export PATH="$(cat $HOME/.vmn/node-version):$PATH"
 export PATH="$(cat $HOME/.vmn/python-version):$PATH"
 
 function vmn {
-	$(which vmn) "$@"
+	$(whereis vmn | cut -d" " -f2) $@
 	if [[ "$1" == "node" ]]
 	then
 		export PATH="$(cat $HOME/.vmn/node-version):$PATH"
@@ -31,34 +31,34 @@ function setNodeVersion {
 	if [ -f .vmnrc ]
 	then
 		echo "Found .vmnrc file"
-		if [ -f $HOME/.vmn/node/v$(ls "$HOME/.vmn/node" | grep "$(cat .vmnrc)" | tail -1 | cut -f2 -d"v")/bin/node ]
+		if [ -f $HOME/.vmn/node/v$(ls "$HOME/.vmn/node" 2> /dev/null | grep "$(cat .vmnrc)" | tail -1 | cut -f2 -d"v")/bin/node ]
 		then
-			export PATH="$HOME/.vmn/node/v$(ls "$HOME/.vmn/node" | grep "$(cat .vmnrc)" | tail -1 | cut -f2 -d"v")/bin:$PATH"
+			export PATH="$HOME/.vmn/node/v$(ls "$HOME/.vmn/node" 2> /dev/null | grep "$(cat .vmnrc)" | tail -1 | cut -f2 -d"v")/bin:$PATH"
 		else
 			vmn node install $(cat .vmnrc)
-			export PATH="$HOME/.vmn/node/v$(ls "$HOME/.vmn/node" | grep "$(cat .vmnrc)" | tail -1 | cut -f2 -d"v")/bin:$PATH"
+			export PATH="$HOME/.vmn/node/v$(ls "$HOME/.vmn/node" 2> /dev/null | grep "$(cat .vmnrc)" | tail -1 | cut -f2 -d"v")/bin:$PATH"
 		fi
 		echo "Using node version $(node --version)"
 	elif [ -f .nvmrc ]
 	then
 		echo "Found .nvmrc file"
-		if [ -f $HOME/.vmn/node/v$(ls "$HOME/.vmn/node" | grep "$(cat .nvmrc)" | tail -1 | cut -f2 -d"v")/bin/node ]
+		if [ -f $HOME/.vmn/node/v$(ls "$HOME/.vmn/node" 2> /dev/null | grep "$(cat .nvmrc)" | tail -1 | cut -f2 -d"v")/bin/node ]
 		then
-			export PATH="$HOME/.vmn/node/v$(ls "$HOME/.vmn/node" | grep "$(cat .nvmrc)" | tail -1 | cut -f2 -d"v")/bin:$PATH"
+			export PATH="$HOME/.vmn/node/v$(ls "$HOME/.vmn/node" 2> /dev/null | grep "$(cat .nvmrc)" | tail -1 | cut -f2 -d"v")/bin:$PATH"
 		else
 			vmn node install $(cat .nvmrc)
-			export PATH="$HOME/.vmn/node/v$(ls "$HOME/.vmn/node" | grep "$(cat .nvmrc)" | tail -1 | cut -f2 -d"v")/bin:$PATH"
+			export PATH="$HOME/.vmn/node/v$(ls "$HOME/.vmn/node" 2> /dev/null | grep "$(cat .nvmrc)" | tail -1 | cut -f2 -d"v")/bin:$PATH"
 		fi
 		echo "Using node version $(node --version)"
 	elif [ -f .node-version ]
 	then
 		echo "Found .node-version file"
-		if [ -f $HOME/.vmn/node/v$(ls "$HOME/.vmn/node" | grep "$(cat .node-version)" | tail -1 | cut -f2 -d"v")/bin/node ]
+		if [ -f $HOME/.vmn/node/v$(ls "$HOME/.vmn/node" 2> /dev/null | grep "$(cat .node-version)" | tail -1 | cut -f2 -d"v")/bin/node ]
 		then
-			export PATH="$HOME/.vmn/node/v$(ls "$HOME/.vmn/node" | grep "$(cat .node-version)" | tail -1 | cut -f2 -d"v")/bin:$PATH"
+			export PATH="$HOME/.vmn/node/v$(ls "$HOME/.vmn/node" 2> /dev/null | grep "$(cat .node-version)" | tail -1 | cut -f2 -d"v")/bin:$PATH"
 		else
 			vmn node install $(cat .node-version)
-			export PATH="$HOME/.vmn/node/v$(ls "$HOME/.vmn/node" | grep "$(cat .node-version)" | tail -1 | cut -f2 -d"v")/bin:$PATH"
+			export PATH="$HOME/.vmn/node/v$(ls "$HOME/.vmn/node" 2> /dev/null | grep "$(cat .node-version)" | tail -1 | cut -f2 -d"v")/bin:$PATH"
 		fi
 		echo "Using node version $(node --version)"
 	fi
@@ -68,14 +68,17 @@ function setPythonVersion {
 	if [ -f .python-version ]
 	then
 		echo "Found .python-version file"
-		if [ -d $HOME/.vmn/python/v$(ls "$HOME/.vmn/python" | grep "$(cat .python-version)" | tail -1 | cut -f2 -d"v")/bin ]
+		if [ -d $HOME/.vmn/python/v$(ls "$HOME/.vmn/python" 2> /dev/null | grep "$(cat .python-version)" | tail -1 | cut -f2 -d"v")/bin ]
 		then
-			export PATH="$HOME/.vmn/python/v$(ls "$HOME/.vmn/python" | grep "$(cat .python-version)" | tail -1 | cut -f2 -d"v")/bin:$PATH"
+			export PATH="$HOME/.vmn/python/v$(ls "$HOME/.vmn/python" 2> /dev/null | grep "$(cat .python-version)" | tail -1 | cut -f2 -d"v")/bin:$PATH"
 		else
-			vmn python install $(cat .python-version)
-			export PATH="$HOME/.vmn/python/v$(ls "$HOME/.vmn/python" | grep "$(cat .python-version)" | tail -1 | cut -f2 -d"v")/bin:$PATH"
+			vmn --compile python install $(cat .python-version)
+			export PATH="$HOME/.vmn/python/v$(ls "$HOME/.vmn/python" 2> /dev/null | grep "$(cat .python-version)" | tail -1 | cut -f2 -d"v")/bin:$PATH"
 		fi
-		echo "Using python version v$(ls "$HOME/.vmn/python" | grep "$(cat .python-version)" | tail -1 | cut -f2 -d"v")"
+
+		if [[ $(ls "$HOME/.vmn/python" 2> /dev/null | grep "$(cat .python-version)" | tail -1) != "" ]]; then
+			echo "Using python version v$(ls "$HOME/.vmn/python" 2> /dev/null | grep "$(cat .python-version)" | tail -1 | cut -f2 -d"v")"
+		fi
 	fi
 }
 
