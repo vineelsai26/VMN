@@ -11,7 +11,7 @@ on:
     branches: ["main"]
 
 env:
-  GoVersion: 1.21
+  GoVersion: 1.22
 
 jobs:
   build:
