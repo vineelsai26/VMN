@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strconv"
 	"strings"
 
@@ -12,6 +13,7 @@ import (
 )
 
 func installPythonFromSource(version string, compile_flags_override string) (string, error) {
+	version = strings.TrimPrefix(version, "v")
 	fullURLFile := "https://www.python.org/ftp/python/" + version + "/Python-" + version + ".tgz"
 	downloadDir := filepath.Join(utils.GetHome(), ".cache", "vmn")
 	buildDir := filepath.Join(downloadDir, "build", version)
@@ -119,7 +121,7 @@ func installPythonFromSource(version string, compile_flags_override string) (str
 }
 
 func installPython(version string) (string, error) {
-	fullURLFile := "https://repo.vineelsai.com/linux/generic/packages/python-" + strings.TrimLeft(version, "v") + ".tar.gz"
+	fullURLFile := "https://repo.vineelsai.com/" + runtime.GOOS + "/generic/" + runtime.GOARCH + "/python-" + strings.TrimPrefix(version, "v") + ".tar.gz"
 	downloadDir := filepath.Join(utils.GetHome(), ".cache", "vmn")
 	downloadedFilePath := filepath.Join(downloadDir, strings.Split(fullURLFile, "/")[len(strings.Split(fullURLFile, "/"))-1])
 
@@ -127,7 +129,7 @@ func installPython(version string) (string, error) {
 	fmt.Println("Downloading Python from " + fullURLFile)
 	fileName, err := utils.Download(downloadDir, fullURLFile)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("Python version " + version + " not found in precompiled package repo, please run the following command to compile from source \n ```\n vmn --compile python install " + version + "\n ``` \n NOTE: compiling from source might take a while depending on your system resources.")
 	}
 
 	// Unzip file
