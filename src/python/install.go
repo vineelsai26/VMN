@@ -42,7 +42,7 @@ func installPythonFromSource(version string, compile_flags_override string) (str
 	// Unzip file
 	fmt.Println("Building Python version " + version + " from source...")
 	if strings.HasSuffix(fileName, ".tgz") {
-		if err := utils.UnGzip(downloadedFilePath, buildDir); err != nil {
+		if err := utils.UnGzip(downloadedFilePath, buildDir, false); err != nil {
 			return "", err
 		}
 
@@ -139,7 +139,7 @@ func installPython(version string) (string, error) {
 			return "", err
 		}
 	} else if strings.HasSuffix(fileName, ".tar.gz") {
-		if err := utils.UnGzip(downloadedFilePath, utils.GetDestination(version, "python")); err != nil {
+		if err := utils.UnGzip(downloadedFilePath, utils.GetDestination(version, "python"), true); err != nil {
 			return "", err
 		}
 	}

@@ -83,7 +83,7 @@ func Unzip(src string, dest string) error {
 	return nil
 }
 
-func UnGzip(src string, dest string) error {
+func UnGzip(src string, dest string, directExtract bool) error {
 	r, err := os.Open(src)
 	if err != nil {
 		return err
@@ -148,8 +148,16 @@ func UnGzip(src string, dest string) error {
 			continue
 		}
 
+		insideZipPath := ""
+
+		if directExtract {
+			insideZipPath = strings.Join(strings.Split(header.Name, "/")[0:], "/")
+		} else {
+			insideZipPath = strings.Join(strings.Split(header.Name, "/")[1:], "/")
+		}
+
 		// the target location where the dir/file should be created
-		target := filepath.Join(dest, strings.Join(strings.Split(header.Name, "/")[1:], "/"))
+		target := filepath.Join(dest, insideZipPath)
 
 		// check the file type
 		switch header.Typeflag {

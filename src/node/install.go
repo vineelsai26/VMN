@@ -66,7 +66,7 @@ func installVersion(version string) (string, error) {
 			return "", err
 		}
 	} else if strings.HasSuffix(fileName, ".tar.gz") {
-		if err := utils.UnGzip(downloadedFilePath, utils.GetDestination(version, "node")); err != nil {
+		if err := utils.UnGzip(downloadedFilePath, utils.GetDestination(version, "node"), false); err != nil {
 			return "", err
 		}
 	}
