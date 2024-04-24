@@ -1,11 +1,12 @@
 Name:         	VMN
-Version:      	0.3.1
+Version:      	0.3.2
 Release:      	1
 Summary:      	Version manager for node and python
 License:      	MIT
 URL: 			https://github.com/vineelsai26/VMN
 Source: 		VMN-%{version}.tar.gz
 BuildRequires:	go
+BuildRequires:	git
 
 %description
 Version manager for Node.js and Python
@@ -27,6 +28,10 @@ install -m 755 vmn %{buildroot}/usr/bin/vmn
 /usr/bin/vmn
 
 %changelog
+* Wed Apr 24 2024 Vineel Sai <mail@vineelsai.com> 0.3.2-1
+- fix spec file (mail@vineelsai.com)
+- Automatic commit of package [VMN] release [0.3.1-1]. (mail@vineelsai.com)
+
 * Wed Apr 24 2024 Vineel Sai <mail@vineelsai.com> 0.3.1-1
 - remove .copr (mail@vineelsai.com)
 
