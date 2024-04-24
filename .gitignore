@@ -1,4 +1,4 @@
 *.exe
-vmn
+build
 package
 .DS_Store
