@@ -3,12 +3,17 @@ Version:      	0.3.1
 Release:      	1
 Summary:      	Version manager for node and python
 License:      	MIT
+URL: 			https://github.com/vineelsai26/VMN
+Source: 		VMN-%{version}.tar.gz
 BuildRequires:	go
 
 %description
 Version manager for Node.js and Python
 
+%define debug_package %{nil}
+
 %prep
+%autosetup
 go get
 
 %build
