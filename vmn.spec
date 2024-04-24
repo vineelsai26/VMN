@@ -1,5 +1,5 @@
 Name:         	VMN
-Version:      	0.3.0
+Version:      	0.3.1
 Release:      	1
 Summary:      	Version manager for node and python
 License:      	MIT
@@ -22,6 +22,9 @@ install -m 755 vmn %{buildroot}/usr/bin/vmn
 /usr/bin/vmn
 
 %changelog
+* Wed Apr 24 2024 Vineel Sai <mail@vineelsai.com> 0.3.1-1
+- 
+
 * Wed Apr 24 2024 Vineel Sai <mail@vineelsai.com> 0.3.0-1
 - make rpm package test1 (mail@vineelsai.com)
 - Delete .github/workflows/codeql.yml (mail@vineelsai.com)
