@@ -121,7 +121,8 @@ func installPythonFromSource(version string, compile_flags_override string) (str
 }
 
 func installPython(version string) (string, error) {
-	fullURLFile := "https://repo.vineelsai.com/" + runtime.GOOS + "/generic/" + runtime.GOARCH + "/python-" + strings.TrimPrefix(version, "v") + ".tar.gz"
+	version = strings.TrimPrefix(version, "v")
+	fullURLFile := "https://repo.vineelsai.com/" + runtime.GOOS + "/generic/" + runtime.GOARCH + "/python-" + version + ".tar.gz"
 	downloadDir := filepath.Join(utils.GetHome(), ".cache", "vmn")
 	downloadedFilePath := filepath.Join(downloadDir, strings.Split(fullURLFile, "/")[len(strings.Split(fullURLFile, "/"))-1])
 
@@ -135,11 +136,11 @@ func installPython(version string) (string, error) {
 	// Unzip file
 	fmt.Println("Installing Python version " + version + "...")
 	if strings.HasSuffix(fileName, ".zip") {
-		if err := utils.Unzip(downloadedFilePath, utils.GetDestination(version, "python")); err != nil {
+		if err := utils.Unzip(downloadedFilePath, utils.GetDestination("v"+version, "python")); err != nil {
 			return "", err
 		}
 	} else if strings.HasSuffix(fileName, ".tar.gz") {
-		if err := utils.UnGzip(downloadedFilePath, utils.GetDestination(version, "python"), true); err != nil {
+		if err := utils.UnGzip(downloadedFilePath, utils.GetDestination("v"+version, "python"), true); err != nil {
 			return "", err
 		}
 	}
@@ -168,9 +169,9 @@ func Install(version string, compile bool, compile_flags_override string) (strin
 	} else if len(strings.Split(version, ".")) == 3 {
 		version = "v" + version
 	} else if len(strings.Split(version, ".")) == 2 {
-		version = GetLatestVersionOfVersion(strings.Split(version, ".")[0], strings.Split(version, ".")[1])
+		version = "v" + GetLatestVersionOfVersion(strings.Split(version, ".")[0], strings.Split(version, ".")[1])
 	} else if len(strings.Split(version, ".")) == 1 {
-		version = GetLatestVersionOfVersion(version, "")
+		version = "v" + GetLatestVersionOfVersion(version, "")
 	} else {
 		return "", fmt.Errorf("invalid version")
 	}
