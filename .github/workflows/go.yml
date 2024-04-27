@@ -33,7 +33,7 @@ jobs:
   test:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [windows-latest, macos-latest, ubuntu-latest ]
     runs-on: ${{ matrix.os }}
     needs: build
     steps:
@@ -53,6 +53,7 @@ jobs:
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     needs: test
+    environment: release_repo_cache
     permissions:
       id-token: write
       contents: read
@@ -73,32 +74,21 @@ jobs:
 
       - name: Setup VMN
         run: |
-          git clone https://github.com/vineelsai26/VMN.git
-          cd VMN
           go build
           cp vmn /usr/local/bin/vmn
 
       - name: Build Python
         run: |
           vmn --compile python install 3.12.3
-          vmn --compile python install 3.11.9
-          vmn --compile python install 3.10.14
-          vmn --compile python install 3.9.19
 
       - name: "DRY RUN: Upload Python package to S3"
         if: github.ref != 'refs/heads/main'
         run: |
           OS=$(uname -s)
           if [[ $OS == "Linux" ]]; then
-            cd $HOME/.vmn/python/v3.12.3/ && tar -czvf python-3.12.3.tar.gz * && aws s3 cp python-3.12.3.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.11.9/ && tar -czvf python-3.11.9.tar.gz * && aws s3 cp python-3.11.9.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.10.14/ && tar -czvf python-3.10.14.tar.gz * && aws s3 cp python-3.10.14.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.9.19/ && tar -czvf python-3.9.19.tar.gz * && aws s3 cp python-3.9.19.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
+            cd $HOME/.vmn/python/v3.12.3/ && tar -czf python-3.12.3.tar.gz * && aws s3 cp --dry-run python-3.12.3.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
           elif [[ $OS == "Darwin" ]]; then
-            cd $HOME/.vmn/python/v3.12.3/ && tar -czvf python-3.12.3.tar.gz * && aws s3 cp python-3.12.3.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.11.9/ && tar -czvf python-3.11.9.tar.gz * && aws s3 cp python-3.11.9.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.10.14/ && tar -czvf python-3.10.14.tar.gz * && aws s3 cp python-3.10.14.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.9.19/ && tar -czvf python-3.9.19.tar.gz * && aws s3 cp python-3.9.19.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
+            cd $HOME/.vmn/python/v3.12.3/ && tar -czf python-3.12.3.tar.gz * && aws s3 cp --dry-run python-3.12.3.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
           fi
 
       - name: Upload Python package to S3
@@ -106,15 +96,9 @@ jobs:
         run: |
           OS=$(uname -s)
           if [[ $OS == "Linux" ]]; then
-            cd $HOME/.vmn/python/v3.12.3/ && tar -czvf python-3.12.3.tar.gz * && aws s3 cp python-3.12.3.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.11.9/ && tar -czvf python-3.11.9.tar.gz * && aws s3 cp python-3.11.9.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.10.14/ && tar -czvf python-3.10.14.tar.gz * && aws s3 cp python-3.10.14.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.9.19/ && tar -czvf python-3.9.19.tar.gz * && aws s3 cp python-3.9.19.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
+            cd $HOME/.vmn/python/v3.12.3/ && tar -czf python-3.12.3.tar.gz * && aws s3 cp python-3.12.3.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
           elif [[ $OS == "Darwin" ]]; then
-            cd $HOME/.vmn/python/v3.12.3/ && tar -czvf python-3.12.3.tar.gz * && aws s3 cp python-3.12.3.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.11.9/ && tar -czvf python-3.11.9.tar.gz * && aws s3 cp python-3.11.9.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.10.14/ && tar -czvf python-3.10.14.tar.gz * && aws s3 cp python-3.10.14.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.9.19/ && tar -czvf python-3.9.19.tar.gz * && aws s3 cp python-3.9.19.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
+            cd $HOME/.vmn/python/v3.12.3/ && tar -czf python-3.12.3.tar.gz * && aws s3 cp python-3.12.3.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
           fi
 
   release:
