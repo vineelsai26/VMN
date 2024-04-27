@@ -53,6 +53,7 @@ jobs:
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     needs: test
+    environment: release_repo_cache
     permissions:
       id-token: write
       contents: read
@@ -79,155 +80,15 @@ jobs:
       - name: Build Python
         run: |
           vmn --compile python install 3.12.3
-          vmn --compile python install 3.12.2
-          vmn --compile python install 3.12.1
-          vmn --compile python install 3.11.9
-          vmn --compile python install 3.11.8
-          vmn --compile python install 3.11.7
-          vmn --compile python install 3.11.6
-          vmn --compile python install 3.11.5
-          vmn --compile python install 3.11.4
-          vmn --compile python install 3.11.3
-          vmn --compile python install 3.11.2
-          vmn --compile python install 3.11.1
-
-          vmn --compile python install 3.10.14
-          vmn --compile python install 3.10.13
-          vmn --compile python install 3.10.12
-          vmn --compile python install 3.10.11
-          vmn --compile python install 3.10.10
-          vmn --compile python install 3.10.9
-          vmn --compile python install 3.10.8
-          vmn --compile python install 3.10.7
-          vmn --compile python install 3.10.6
-          vmn --compile python install 3.10.5
-          vmn --compile python install 3.10.4
-          vmn --compile python install 3.10.3
-          vmn --compile python install 3.10.2
-          vmn --compile python install 3.10.1
-
-          vmn --compile python install 3.9.19
-          vmn --compile python install 3.9.18
-          vmn --compile python install 3.9.17
-          vmn --compile python install 3.9.16
-          vmn --compile python install 3.9.15
-          vmn --compile python install 3.9.14
-          vmn --compile python install 3.9.13
-          vmn --compile python install 3.9.12
-          vmn --compile python install 3.9.11
-          vmn --compile python install 3.9.10
-          vmn --compile python install 3.9.9
-          vmn --compile python install 3.9.8
-          vmn --compile python install 3.9.7
-          vmn --compile python install 3.9.6
-          vmn --compile python install 3.9.5
-          vmn --compile python install 3.9.4
-          vmn --compile python install 3.9.3
-          vmn --compile python install 3.9.2
-          vmn --compile python install 3.9.1
 
       - name: "DRY RUN: Upload Python package to S3"
         if: github.ref != 'refs/heads/main'
         run: |
           OS=$(uname -s)
           if [[ $OS == "Linux" ]]; then
-            cd $HOME/.vmn/python/v3.12.3/ && tar -czf python-3.12.3.tar.gz * && aws s3 cp python-3.12.3.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.12.2/ && tar -czf python-3.12.2.tar.gz * && aws s3 cp python-3.12.2.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.12.1/ && tar -czf python-3.12.1.tar.gz * && aws s3 cp python-3.12.1.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-
-            cd $HOME/.vmn/python/v3.11.9/ && tar -czf python-3.11.9.tar.gz * && aws s3 cp python-3.11.9.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.11.8/ && tar -czf python-3.11.8.tar.gz * && aws s3 cp python-3.11.8.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.11.7/ && tar -czf python-3.11.7.tar.gz * && aws s3 cp python-3.11.7.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.11.6/ && tar -czf python-3.11.6.tar.gz * && aws s3 cp python-3.11.6.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.11.5/ && tar -czf python-3.11.5.tar.gz * && aws s3 cp python-3.11.5.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.11.4/ && tar -czf python-3.11.4.tar.gz * && aws s3 cp python-3.11.4.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.11.3/ && tar -czf python-3.11.3.tar.gz * && aws s3 cp python-3.11.3.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.11.2/ && tar -czf python-3.11.2.tar.gz * && aws s3 cp python-3.11.2.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.11.1/ && tar -czf python-3.11.1.tar.gz * && aws s3 cp python-3.11.1.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-
-            cd $HOME/.vmn/python/v3.10.14/ && tar -czf python-3.10.14.tar.gz * && aws s3 cp python-3.10.14.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.10.13/ && tar -czf python-3.10.13.tar.gz * && aws s3 cp python-3.10.13.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.10.12/ && tar -czf python-3.10.12.tar.gz * && aws s3 cp python-3.10.12.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.10.11/ && tar -czf python-3.10.11.tar.gz * && aws s3 cp python-3.10.11.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.10.10/ && tar -czf python-3.10.10.tar.gz * && aws s3 cp python-3.10.10.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.10.9/ && tar -czf python-3.10.9.tar.gz * && aws s3 cp python-3.10.9.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.10.8/ && tar -czf python-3.10.8.tar.gz * && aws s3 cp python-3.10.8.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.10.7/ && tar -czf python-3.10.7.tar.gz * && aws s3 cp python-3.10.7.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.10.6/ && tar -czf python-3.10.6.tar.gz * && aws s3 cp python-3.10.6.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.10.5/ && tar -czf python-3.10.5.tar.gz * && aws s3 cp python-3.10.5.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.10.4/ && tar -czf python-3.10.4.tar.gz * && aws s3 cp python-3.10.4.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.10.3/ && tar -czf python-3.10.3.tar.gz * && aws s3 cp python-3.10.3.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.10.2/ && tar -czf python-3.10.2.tar.gz * && aws s3 cp python-3.10.2.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.10.1/ && tar -czf python-3.10.1.tar.gz * && aws s3 cp python-3.10.1.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-
-            cd $HOME/.vmn/python/v3.9.19/ && tar -czf python-3.9.19.tar.gz * && aws s3 cp python-3.9.19.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.9.18/ && tar -czf python-3.9.18.tar.gz * && aws s3 cp python-3.9.18.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.9.17/ && tar -czf python-3.9.17.tar.gz * && aws s3 cp python-3.9.17.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.9.16/ && tar -czf python-3.9.16.tar.gz * && aws s3 cp python-3.9.16.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.9.15/ && tar -czf python-3.9.15.tar.gz * && aws s3 cp python-3.9.15.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.9.14/ && tar -czf python-3.9.14.tar.gz * && aws s3 cp python-3.9.14.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.9.13/ && tar -czf python-3.9.13.tar.gz * && aws s3 cp python-3.9.13.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.9.12/ && tar -czf python-3.9.12.tar.gz * && aws s3 cp python-3.9.12.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.9.11/ && tar -czf python-3.9.11.tar.gz * && aws s3 cp python-3.9.11.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.9.10/ && tar -czf python-3.9.10.tar.gz * && aws s3 cp python-3.9.10.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.9.9/ && tar -czf python-3.9.9.tar.gz * && aws s3 cp python-3.9.9.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.9.8/ && tar -czf python-3.9.8.tar.gz * && aws s3 cp python-3.9.8.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.9.7/ && tar -czf python-3.9.7.tar.gz * && aws s3 cp python-3.9.7.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.9.6/ && tar -czf python-3.9.6.tar.gz * && aws s3 cp python-3.9.6.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.9.5/ && tar -czf python-3.9.5.tar.gz * && aws s3 cp python-3.9.5.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.9.4/ && tar -czf python-3.9.4.tar.gz * && aws s3 cp python-3.9.4.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.9.3/ && tar -czf python-3.9.3.tar.gz * && aws s3 cp python-3.9.3.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.9.2/ && tar -czf python-3.9.2.tar.gz * && aws s3 cp python-3.9.2.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.9.1/ && tar -czf python-3.9.1.tar.gz * && aws s3 cp python-3.9.1.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
+            cd $HOME/.vmn/python/v3.12.3/ && tar -czf python-3.12.3.tar.gz * && aws s3 cp --dry-run python-3.12.3.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
           elif [[ $OS == "Darwin" ]]; then
-            cd $HOME/.vmn/python/v3.12.3/ && tar -czf python-3.12.3.tar.gz * && aws s3 cp python-3.12.3.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.12.2/ && tar -czf python-3.12.2.tar.gz * && aws s3 cp python-3.12.2.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.12.1/ && tar -czf python-3.12.1.tar.gz * && aws s3 cp python-3.12.1.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-
-            cd $HOME/.vmn/python/v3.11.9/ && tar -czf python-3.11.9.tar.gz * && aws s3 cp python-3.11.9.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.11.8/ && tar -czf python-3.11.8.tar.gz * && aws s3 cp python-3.11.8.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.11.7/ && tar -czf python-3.11.7.tar.gz * && aws s3 cp python-3.11.7.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.11.6/ && tar -czf python-3.11.6.tar.gz * && aws s3 cp python-3.11.6.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.11.5/ && tar -czf python-3.11.5.tar.gz * && aws s3 cp python-3.11.5.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.11.4/ && tar -czf python-3.11.4.tar.gz * && aws s3 cp python-3.11.4.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.11.3/ && tar -czf python-3.11.3.tar.gz * && aws s3 cp python-3.11.3.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.11.2/ && tar -czf python-3.11.2.tar.gz * && aws s3 cp python-3.11.2.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.11.1/ && tar -czf python-3.11.1.tar.gz * && aws s3 cp python-3.11.1.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-
-            cd $HOME/.vmn/python/v3.10.14/ && tar -czf python-3.10.14.tar.gz * && aws s3 cp python-3.10.14.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.10.13/ && tar -czf python-3.10.13.tar.gz * && aws s3 cp python-3.10.13.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.10.12/ && tar -czf python-3.10.12.tar.gz * && aws s3 cp python-3.10.12.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.10.11/ && tar -czf python-3.10.11.tar.gz * && aws s3 cp python-3.10.11.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.10.10/ && tar -czf python-3.10.10.tar.gz * && aws s3 cp python-3.10.10.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.10.9/ && tar -czf python-3.10.9.tar.gz * && aws s3 cp python-3.10.9.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.10.8/ && tar -czf python-3.10.8.tar.gz * && aws s3 cp python-3.10.8.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.10.7/ && tar -czf python-3.10.7.tar.gz * && aws s3 cp python-3.10.7.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.10.6/ && tar -czf python-3.10.6.tar.gz * && aws s3 cp python-3.10.6.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.10.5/ && tar -czf python-3.10.5.tar.gz * && aws s3 cp python-3.10.5.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.10.4/ && tar -czf python-3.10.4.tar.gz * && aws s3 cp python-3.10.4.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.10.3/ && tar -czf python-3.10.3.tar.gz * && aws s3 cp python-3.10.3.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.10.2/ && tar -czf python-3.10.2.tar.gz * && aws s3 cp python-3.10.2.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.10.1/ && tar -czf python-3.10.1.tar.gz * && aws s3 cp python-3.10.1.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-
-            cd $HOME/.vmn/python/v3.9.19/ && tar -czf python-3.9.19.tar.gz * && aws s3 cp python-3.9.19.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.9.18/ && tar -czf python-3.9.18.tar.gz * && aws s3 cp python-3.9.18.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.9.17/ && tar -czf python-3.9.17.tar.gz * && aws s3 cp python-3.9.17.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.9.16/ && tar -czf python-3.9.16.tar.gz * && aws s3 cp python-3.9.16.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.9.15/ && tar -czf python-3.9.15.tar.gz * && aws s3 cp python-3.9.15.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.9.14/ && tar -czf python-3.9.14.tar.gz * && aws s3 cp python-3.9.14.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.9.13/ && tar -czf python-3.9.13.tar.gz * && aws s3 cp python-3.9.13.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.9.12/ && tar -czf python-3.9.12.tar.gz * && aws s3 cp python-3.9.12.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.9.11/ && tar -czf python-3.9.11.tar.gz * && aws s3 cp python-3.9.11.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.9.10/ && tar -czf python-3.9.10.tar.gz * && aws s3 cp python-3.9.10.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.9.9/ && tar -czf python-3.9.9.tar.gz * && aws s3 cp python-3.9.9.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.9.8/ && tar -czf python-3.9.8.tar.gz * && aws s3 cp python-3.9.8.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.9.7/ && tar -czf python-3.9.7.tar.gz * && aws s3 cp python-3.9.7.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.9.6/ && tar -czf python-3.9.6.tar.gz * && aws s3 cp python-3.9.6.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.9.5/ && tar -czf python-3.9.5.tar.gz * && aws s3 cp python-3.9.5.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.9.4/ && tar -czf python-3.9.4.tar.gz * && aws s3 cp python-3.9.4.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.9.3/ && tar -czf python-3.9.3.tar.gz * && aws s3 cp python-3.9.3.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.9.2/ && tar -czf python-3.9.2.tar.gz * && aws s3 cp python-3.9.2.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.9.1/ && tar -czf python-3.9.1.tar.gz * && aws s3 cp python-3.9.1.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
+            cd $HOME/.vmn/python/v3.12.3/ && tar -czf python-3.12.3.tar.gz * && aws s3 cp --dry-run python-3.12.3.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
           fi
 
       - name: Upload Python package to S3
@@ -236,102 +97,8 @@ jobs:
           OS=$(uname -s)
           if [[ $OS == "Linux" ]]; then
             cd $HOME/.vmn/python/v3.12.3/ && tar -czf python-3.12.3.tar.gz * && aws s3 cp python-3.12.3.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.12.2/ && tar -czf python-3.12.2.tar.gz * && aws s3 cp python-3.12.2.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.12.1/ && tar -czf python-3.12.1.tar.gz * && aws s3 cp python-3.12.1.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-
-            cd $HOME/.vmn/python/v3.11.9/ && tar -czf python-3.11.9.tar.gz * && aws s3 cp python-3.11.9.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.11.8/ && tar -czf python-3.11.8.tar.gz * && aws s3 cp python-3.11.8.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.11.7/ && tar -czf python-3.11.7.tar.gz * && aws s3 cp python-3.11.7.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.11.6/ && tar -czf python-3.11.6.tar.gz * && aws s3 cp python-3.11.6.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.11.5/ && tar -czf python-3.11.5.tar.gz * && aws s3 cp python-3.11.5.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.11.4/ && tar -czf python-3.11.4.tar.gz * && aws s3 cp python-3.11.4.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.11.3/ && tar -czf python-3.11.3.tar.gz * && aws s3 cp python-3.11.3.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.11.2/ && tar -czf python-3.11.2.tar.gz * && aws s3 cp python-3.11.2.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.11.1/ && tar -czf python-3.11.1.tar.gz * && aws s3 cp python-3.11.1.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-
-            cd $HOME/.vmn/python/v3.10.14/ && tar -czf python-3.10.14.tar.gz * && aws s3 cp python-3.10.14.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.10.13/ && tar -czf python-3.10.13.tar.gz * && aws s3 cp python-3.10.13.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.10.12/ && tar -czf python-3.10.12.tar.gz * && aws s3 cp python-3.10.12.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.10.11/ && tar -czf python-3.10.11.tar.gz * && aws s3 cp python-3.10.11.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.10.10/ && tar -czf python-3.10.10.tar.gz * && aws s3 cp python-3.10.10.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.10.9/ && tar -czf python-3.10.9.tar.gz * && aws s3 cp python-3.10.9.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.10.8/ && tar -czf python-3.10.8.tar.gz * && aws s3 cp python-3.10.8.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.10.7/ && tar -czf python-3.10.7.tar.gz * && aws s3 cp python-3.10.7.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.10.6/ && tar -czf python-3.10.6.tar.gz * && aws s3 cp python-3.10.6.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.10.5/ && tar -czf python-3.10.5.tar.gz * && aws s3 cp python-3.10.5.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.10.4/ && tar -czf python-3.10.4.tar.gz * && aws s3 cp python-3.10.4.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.10.3/ && tar -czf python-3.10.3.tar.gz * && aws s3 cp python-3.10.3.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.10.2/ && tar -czf python-3.10.2.tar.gz * && aws s3 cp python-3.10.2.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.10.1/ && tar -czf python-3.10.1.tar.gz * && aws s3 cp python-3.10.1.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-
-            cd $HOME/.vmn/python/v3.9.19/ && tar -czf python-3.9.19.tar.gz * && aws s3 cp python-3.9.19.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.9.18/ && tar -czf python-3.9.18.tar.gz * && aws s3 cp python-3.9.18.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.9.17/ && tar -czf python-3.9.17.tar.gz * && aws s3 cp python-3.9.17.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.9.16/ && tar -czf python-3.9.16.tar.gz * && aws s3 cp python-3.9.16.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.9.15/ && tar -czf python-3.9.15.tar.gz * && aws s3 cp python-3.9.15.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.9.14/ && tar -czf python-3.9.14.tar.gz * && aws s3 cp python-3.9.14.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.9.13/ && tar -czf python-3.9.13.tar.gz * && aws s3 cp python-3.9.13.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.9.12/ && tar -czf python-3.9.12.tar.gz * && aws s3 cp python-3.9.12.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.9.11/ && tar -czf python-3.9.11.tar.gz * && aws s3 cp python-3.9.11.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.9.10/ && tar -czf python-3.9.10.tar.gz * && aws s3 cp python-3.9.10.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.9.9/ && tar -czf python-3.9.9.tar.gz * && aws s3 cp python-3.9.9.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.9.8/ && tar -czf python-3.9.8.tar.gz * && aws s3 cp python-3.9.8.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.9.7/ && tar -czf python-3.9.7.tar.gz * && aws s3 cp python-3.9.7.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.9.6/ && tar -czf python-3.9.6.tar.gz * && aws s3 cp python-3.9.6.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.9.5/ && tar -czf python-3.9.5.tar.gz * && aws s3 cp python-3.9.5.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.9.4/ && tar -czf python-3.9.4.tar.gz * && aws s3 cp python-3.9.4.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.9.3/ && tar -czf python-3.9.3.tar.gz * && aws s3 cp python-3.9.3.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.9.2/ && tar -czf python-3.9.2.tar.gz * && aws s3 cp python-3.9.2.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
-            cd $HOME/.vmn/python/v3.9.1/ && tar -czf python-3.9.1.tar.gz * && aws s3 cp python-3.9.1.tar.gz s3://repo.vineelsai.com/linux/generic/amd64/
           elif [[ $OS == "Darwin" ]]; then
             cd $HOME/.vmn/python/v3.12.3/ && tar -czf python-3.12.3.tar.gz * && aws s3 cp python-3.12.3.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.12.2/ && tar -czf python-3.12.2.tar.gz * && aws s3 cp python-3.12.2.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.12.1/ && tar -czf python-3.12.1.tar.gz * && aws s3 cp python-3.12.1.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-
-            cd $HOME/.vmn/python/v3.11.9/ && tar -czf python-3.11.9.tar.gz * && aws s3 cp python-3.11.9.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.11.8/ && tar -czf python-3.11.8.tar.gz * && aws s3 cp python-3.11.8.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.11.7/ && tar -czf python-3.11.7.tar.gz * && aws s3 cp python-3.11.7.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.11.6/ && tar -czf python-3.11.6.tar.gz * && aws s3 cp python-3.11.6.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.11.5/ && tar -czf python-3.11.5.tar.gz * && aws s3 cp python-3.11.5.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.11.4/ && tar -czf python-3.11.4.tar.gz * && aws s3 cp python-3.11.4.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.11.3/ && tar -czf python-3.11.3.tar.gz * && aws s3 cp python-3.11.3.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.11.2/ && tar -czf python-3.11.2.tar.gz * && aws s3 cp python-3.11.2.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.11.1/ && tar -czf python-3.11.1.tar.gz * && aws s3 cp python-3.11.1.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-
-            cd $HOME/.vmn/python/v3.10.14/ && tar -czf python-3.10.14.tar.gz * && aws s3 cp python-3.10.14.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.10.13/ && tar -czf python-3.10.13.tar.gz * && aws s3 cp python-3.10.13.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.10.12/ && tar -czf python-3.10.12.tar.gz * && aws s3 cp python-3.10.12.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.10.11/ && tar -czf python-3.10.11.tar.gz * && aws s3 cp python-3.10.11.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.10.10/ && tar -czf python-3.10.10.tar.gz * && aws s3 cp python-3.10.10.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.10.9/ && tar -czf python-3.10.9.tar.gz * && aws s3 cp python-3.10.9.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.10.8/ && tar -czf python-3.10.8.tar.gz * && aws s3 cp python-3.10.8.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.10.7/ && tar -czf python-3.10.7.tar.gz * && aws s3 cp python-3.10.7.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.10.6/ && tar -czf python-3.10.6.tar.gz * && aws s3 cp python-3.10.6.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.10.5/ && tar -czf python-3.10.5.tar.gz * && aws s3 cp python-3.10.5.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.10.4/ && tar -czf python-3.10.4.tar.gz * && aws s3 cp python-3.10.4.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.10.3/ && tar -czf python-3.10.3.tar.gz * && aws s3 cp python-3.10.3.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.10.2/ && tar -czf python-3.10.2.tar.gz * && aws s3 cp python-3.10.2.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.10.1/ && tar -czf python-3.10.1.tar.gz * && aws s3 cp python-3.10.1.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-
-            cd $HOME/.vmn/python/v3.9.19/ && tar -czf python-3.9.19.tar.gz * && aws s3 cp python-3.9.19.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.9.18/ && tar -czf python-3.9.18.tar.gz * && aws s3 cp python-3.9.18.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.9.17/ && tar -czf python-3.9.17.tar.gz * && aws s3 cp python-3.9.17.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.9.16/ && tar -czf python-3.9.16.tar.gz * && aws s3 cp python-3.9.16.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.9.15/ && tar -czf python-3.9.15.tar.gz * && aws s3 cp python-3.9.15.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.9.14/ && tar -czf python-3.9.14.tar.gz * && aws s3 cp python-3.9.14.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.9.13/ && tar -czf python-3.9.13.tar.gz * && aws s3 cp python-3.9.13.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.9.12/ && tar -czf python-3.9.12.tar.gz * && aws s3 cp python-3.9.12.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.9.11/ && tar -czf python-3.9.11.tar.gz * && aws s3 cp python-3.9.11.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.9.10/ && tar -czf python-3.9.10.tar.gz * && aws s3 cp python-3.9.10.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.9.9/ && tar -czf python-3.9.9.tar.gz * && aws s3 cp python-3.9.9.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.9.8/ && tar -czf python-3.9.8.tar.gz * && aws s3 cp python-3.9.8.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.9.7/ && tar -czf python-3.9.7.tar.gz * && aws s3 cp python-3.9.7.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.9.6/ && tar -czf python-3.9.6.tar.gz * && aws s3 cp python-3.9.6.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.9.5/ && tar -czf python-3.9.5.tar.gz * && aws s3 cp python-3.9.5.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.9.4/ && tar -czf python-3.9.4.tar.gz * && aws s3 cp python-3.9.4.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.9.3/ && tar -czf python-3.9.3.tar.gz * && aws s3 cp python-3.9.3.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.9.2/ && tar -czf python-3.9.2.tar.gz * && aws s3 cp python-3.9.2.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
-            cd $HOME/.vmn/python/v3.9.1/ && tar -czf python-3.9.1.tar.gz * && aws s3 cp python-3.9.1.tar.gz s3://repo.vineelsai.com/darwin/generic/arm64/
           fi
 
   release:
