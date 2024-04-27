@@ -21,7 +21,8 @@ func GetCPUCount() int {
 }
 
 func GetDestination(version string, pl string) string {
-	return filepath.Join(GetHome(), ".vmn", pl, version)
+	version = strings.TrimPrefix(version, "v")
+	return filepath.Join(GetHome(), ".vmn", pl, "v"+version)
 }
 
 func GetVersionPath(version string, pl string) (string, error) {
