@@ -128,21 +128,15 @@ func installPython(version string) (string, error) {
 
 	// Download file
 	fmt.Println("Downloading Python from " + fullURLFile)
-	fileName, err := utils.Download(downloadDir, fullURLFile)
+	_, err := utils.Download(downloadDir, fullURLFile)
 	if err != nil {
 		return "", fmt.Errorf("Python version " + version + " not found in precompiled package repo, please run the following command to compile from source \n ```\n vmn --compile python install " + version + "\n ``` \n NOTE: compiling from source might take a while depending on your system resources.")
 	}
 
 	// Unzip file
 	fmt.Println("Installing Python version " + version + "...")
-	if strings.HasSuffix(fileName, ".zip") {
-		if err := utils.Unzip(downloadedFilePath, utils.GetDestination("v"+version, "python")); err != nil {
-			return "", err
-		}
-	} else if strings.HasSuffix(fileName, ".tar.gz") {
-		if err := utils.UnGzip(downloadedFilePath, utils.GetDestination("v"+version, "python"), true); err != nil {
-			return "", err
-		}
+	if err := utils.UnGzip(downloadedFilePath, utils.GetDestination("v"+version, "python"), true); err != nil {
+		return "", err
 	}
 
 	// Delete file

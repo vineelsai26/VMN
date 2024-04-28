@@ -13,6 +13,7 @@ import (
 )
 
 func Unzip(src string, dest string) error {
+	fmt.Println("Extracting Gzip from " + src + " to " + dest)
 	r, err := zip.OpenReader(src)
 	if err != nil {
 		return err
@@ -84,6 +85,7 @@ func Unzip(src string, dest string) error {
 }
 
 func UnGzip(src string, dest string, directExtract bool) error {
+	fmt.Println("Extracting Gzip from " + src + " to " + dest)
 	r, err := os.Open(src)
 	if err != nil {
 		return err
