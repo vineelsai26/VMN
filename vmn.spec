@@ -1,5 +1,5 @@
 Name:         	VMN
-Version:      	0.3.3
+Version:      	0.3.4
 Release:      	1
 Summary:      	Version manager for node and python
 License:      	MIT
@@ -28,6 +28,18 @@ install -m 755 vmn %{buildroot}/usr/bin/vmn
 /usr/bin/vmn
 
 %changelog
+* Sun Apr 28 2024 Vineel Sai <mail@vineelsai.com> 0.3.4-1
+- remove redundant checks + print extraction path (mail@vineelsai.com)
+- run release repo under environment (mail@vineelsai.com)
+- remove verbose tar log and run on mac and cache builds for all of 3.12-3.9
+  (mail@vineelsai.com)
+- run precompile steps for macos and linux (mail@vineelsai.com)
+- run tests on macos (mail@vineelsai.com)
+- fix version issue python (mail@vineelsai.com)
+- run tests on windows and test compiled an precompiled python installes
+  (mail@vineelsai.com)
+- only run tests on ubuntu for now (mail@vineelsai.com)
+
 * Wed Apr 24 2024 Vineel Sai <mail@vineelsai.com> 0.3.3-1
 - only test with one version (mail@vineelsai.com)
 
