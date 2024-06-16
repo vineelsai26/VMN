@@ -26,9 +26,7 @@ func GetDestination(version string, pl string) string {
 }
 
 func GetVersionPath(version string, pl string) (string, error) {
-	if runtime.GOOS == "windows" {
-		return GetDestination(version, pl), nil
-	} else if runtime.GOOS == "linux" {
+	if runtime.GOOS == "linux" {
 		return filepath.Join(GetDestination(version, pl), "bin"), nil
 	} else if runtime.GOOS == "darwin" {
 		return filepath.Join(GetDestination(version, pl), "bin"), nil
@@ -47,9 +45,7 @@ func GetBinaryPath(version string, pl string) (string, error) {
 		binaryName = "pip" + strings.Split(version, ".")[0] + "." + strings.Split(version, ".")[1]
 		pl = "python"
 	}
-	if runtime.GOOS == "windows" {
-		return filepath.Join(GetDestination("v"+version, pl), binaryName+".exe"), nil
-	} else if runtime.GOOS == "linux" {
+	if runtime.GOOS == "linux" {
 		return filepath.Join(GetDestination("v"+version, pl), "bin", binaryName), nil
 	} else if runtime.GOOS == "darwin" {
 		return filepath.Join(GetDestination("v"+version, pl), "bin", binaryName), nil

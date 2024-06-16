@@ -93,46 +93,11 @@ setPythonVersion
 	`)
 }
 
-func setEnvForPowershell() {
-	fmt.Println(`
-function setNodeVersion {
-	if (Test-Path .vmnrc) {
-        Write-Output "Found .vmnrc file"
-        Set-Item -Path Env:PATH -Value "C:\Users\Vineel\.vmn\node\$(Get-Content .vmnrc);$Env:PATH"
-        Write-Output "Using node version $(node --version)"
-    }
-
-	if (Test-Path .nvmrc) {
-		Write-Output "Found .nvmrc file"
-		Set-Item -Path Env:PATH -Value "C:\Users\Vineel\.vmn\node\$(Get-Content .nvmrc);$Env:PATH"
-		Write-Output "Using node version $(node --version)"
-	}
-
-	if (Test-Path .node-version) {
-		Write-Output "Found .node-version file"
-		Set-Item -Path Env:PATH -Value "C:\Users\Vineel\.vmn\node\$(Get-Content .node-version);$Env:PATH"
-		Write-Output "Using node version $(node --version)"
-	}
-}
-
-function changedir($argList) {
-    Set-Location $argList
-	setNodeVersion
-}
-
-setNodeVersion
-
-Set-Alias -Name cd -Option AllScope -Value changedir
-	`)
-}
-
 func PrintEnv() {
 	if runtime.GOOS == "linux" {
 		fmt.Println("eval \"SHELL=`ps -p $$ -o comm=`; `vmn env $SHELL`\"")
 	} else if runtime.GOOS == "darwin" {
 		fmt.Println("eval \"`vmn env zsh`\"")
-	} else if runtime.GOOS == "windows" {
-		fmt.Println("vmn env powershell | Out-String | Invoke-Expression")
 	}
 }
 
@@ -179,9 +144,5 @@ func RunShellSpecificCommands(args []string) {
 
 	}
 
-	if args[1] == "powershell" {
-		setEnvForPowershell()
-	} else {
-		setEnvForPosixShell()
-	}
+	setEnvForPosixShell()
 }

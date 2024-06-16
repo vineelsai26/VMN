@@ -1,4 +1,0 @@
-[buildconfig]
-builder = tito.builder.Builder
-tagger = tito.tagger.VersionTagger
-tag_format = v{version}

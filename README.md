@@ -1,6 +1,6 @@
 # VMN
 
-VMN is a simple tool for managing Node.js versions. It's written in Go and is available for Linux, macOS and Windows.
+VMN is a simple tool for managing Node.js versions. It's written in Go and is available for Linux and macOS.
 
 ## Linux
 
@@ -47,14 +47,6 @@ wget https://github.com/vineelsai26/VMN/releases/latest/download/vmn-macos-arm64
 tar -xvf vmn-macos-arm64.tar.gz
 sudo mv vmn /usr/local/bin
 ```
-
-### Windows
-
-- Download the [latest release](https://github.com/vineelsai26/VMN/releases/latest) for Windows
-
-- Extract the zip file
-
-- Add the extracted folder to your PATH
 
 ## Usage Node.js
 
