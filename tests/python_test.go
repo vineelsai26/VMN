@@ -14,7 +14,7 @@ import (
 )
 
 func TestPython_3_12_Install(t *testing.T) {
-	msg, err := python.Install("3.12", false, "")
+	msg, err := python.Install("3.12.3", false, "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -23,7 +23,7 @@ func TestPython_3_12_Install(t *testing.T) {
 }
 
 func TestPython_3_12_Use(t *testing.T) {
-	version, err := python.Use("3.12")
+	version, err := python.Use("3.12.3")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -46,7 +46,7 @@ func TestPython_3_12_Use(t *testing.T) {
 }
 
 func TestPython_3_12_Uninstall(t *testing.T) {
-	msg, err := python.Uninstall("3.12")
+	msg, err := python.Uninstall("3.12.3")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -55,7 +55,7 @@ func TestPython_3_12_Uninstall(t *testing.T) {
 }
 
 func TestPython_3_12_Compiled_Install(t *testing.T) {
-	msg, err := python.Install("3.12", true, "--enable-optimizations --enable-loadable-sqlite-extensions --enable-shared --with-computed-gotos --with-lto --enable-ipv6")
+	msg, err := python.Install("3.12.3", true, "--enable-optimizations --enable-loadable-sqlite-extensions --enable-shared --with-computed-gotos --with-lto --enable-ipv6")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -68,7 +68,7 @@ func TestPython_3_12_Compiled_Install(t *testing.T) {
 }
 
 func TestPython_3_12_Compiled_Use(t *testing.T) {
-	version, err := python.Use("3.12")
+	version, err := python.Use("3.12.3")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -91,7 +91,7 @@ func TestPython_3_12_Compiled_Use(t *testing.T) {
 }
 
 func TestPython_3_12_Compiled_Uninstall(t *testing.T) {
-	msg, err := python.Uninstall("3.12")
+	msg, err := python.Uninstall("3.12.3")
 	if err != nil {
 		t.Fatal(err)
 	}
