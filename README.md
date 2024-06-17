@@ -53,49 +53,23 @@ sudo mv vmn /usr/local/bin
 ### Install a Node.js version
 
 ```bash
-vmn node install 20
+vmn install 20
 ```
 
 ### Use a Node.js version
 
 ```bash
-vmn node use 20
+vmn use 20
 ```
 
 ### List installed Node.js versions
 
 ```bash
-vmn node list installed
+vmn list installed
 ```
 
 ### Remove a Node.js version
 
 ```bash
-vmn node uninstall 20
-```
-
-## Usage Python
-
-### Install a Python version
-
-```bash
-vmn python install 3.11
-```
-
-### Use a Python version
-
-```bash
-vmn python use 3.11
-```
-
-### List installed Python versions
-
-```bash
-vmn python list installed
-```
-
-### Remove a Python version
-
-```bash
-vmn python uninstall 3.11
+vmn uninstall 20
 ```

@@ -38,13 +38,6 @@ func GetBinaryPath(version string, pl string) (string, error) {
 	binaryName := pl
 	version = strings.TrimPrefix(version, "v")
 
-	if pl == "python" {
-		binaryName = "python" + strings.Split(version, ".")[0] + "." + strings.Split(version, ".")[1]
-	}
-	if pl == "pip" {
-		binaryName = "pip" + strings.Split(version, ".")[0] + "." + strings.Split(version, ".")[1]
-		pl = "python"
-	}
 	if runtime.GOOS == "linux" {
 		return filepath.Join(GetDestination("v"+version, pl), "bin", binaryName), nil
 	} else if runtime.GOOS == "darwin" {

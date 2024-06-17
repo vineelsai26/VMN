@@ -7,23 +7,18 @@ import (
 	"runtime"
 
 	"vineelsai.com/vmn/src/node"
-	"vineelsai.com/vmn/src/python"
 	"vineelsai.com/vmn/src/utils"
 )
 
 func setEnvForPosixShell() {
 	fmt.Println(`
 export PATH="$(cat $HOME/.vmn/node-version):$PATH"
-export PATH="$(cat $HOME/.vmn/python-version):$PATH"
 
 function vmn {
 	$(whereis vmn | cut -d" " -f2) $@
 	if [[ "$1" == "node" ]]
 	then
 		export PATH="$(cat $HOME/.vmn/node-version):$PATH"
-	elif [[ "$1" == "python" ]]
-	then
-		export PATH="$(cat $HOME/.vmn/python-version):$PATH"
 	fi
 }
 
@@ -35,7 +30,7 @@ function setNodeVersion {
 		then
 			export PATH="$HOME/.vmn/node/v$(ls "$HOME/.vmn/node" 2> /dev/null | grep "$(cat .vmnrc)" | tail -1 | cut -f2 -d"v")/bin:$PATH"
 		else
-			vmn node install $(cat .vmnrc)
+			vmn install $(cat .vmnrc)
 			export PATH="$HOME/.vmn/node/v$(ls "$HOME/.vmn/node" 2> /dev/null | grep "$(cat .vmnrc)" | tail -1 | cut -f2 -d"v")/bin:$PATH"
 		fi
 		echo "Using node version $(node --version)"
@@ -46,7 +41,7 @@ function setNodeVersion {
 		then
 			export PATH="$HOME/.vmn/node/v$(ls "$HOME/.vmn/node" 2> /dev/null | grep "$(cat .nvmrc)" | tail -1 | cut -f2 -d"v")/bin:$PATH"
 		else
-			vmn node install $(cat .nvmrc)
+			vmn install $(cat .nvmrc)
 			export PATH="$HOME/.vmn/node/v$(ls "$HOME/.vmn/node" 2> /dev/null | grep "$(cat .nvmrc)" | tail -1 | cut -f2 -d"v")/bin:$PATH"
 		fi
 		echo "Using node version $(node --version)"
@@ -57,39 +52,19 @@ function setNodeVersion {
 		then
 			export PATH="$HOME/.vmn/node/v$(ls "$HOME/.vmn/node" 2> /dev/null | grep "$(cat .node-version)" | tail -1 | cut -f2 -d"v")/bin:$PATH"
 		else
-			vmn node install $(cat .node-version)
+			vmn install $(cat .node-version)
 			export PATH="$HOME/.vmn/node/v$(ls "$HOME/.vmn/node" 2> /dev/null | grep "$(cat .node-version)" | tail -1 | cut -f2 -d"v")/bin:$PATH"
 		fi
 		echo "Using node version $(node --version)"
 	fi
 }
 
-function setPythonVersion {
-	if [ -f .python-version ]
-	then
-		echo "Found .python-version file"
-		if [ -d $HOME/.vmn/python/v$(ls "$HOME/.vmn/python" 2> /dev/null | grep "$(cat .python-version)" | tail -1 | cut -f2 -d"v")/bin ]
-		then
-			export PATH="$HOME/.vmn/python/v$(ls "$HOME/.vmn/python" 2> /dev/null | grep "$(cat .python-version)" | tail -1 | cut -f2 -d"v")/bin:$PATH"
-		else
-			vmn --compile python install $(cat .python-version)
-			export PATH="$HOME/.vmn/python/v$(ls "$HOME/.vmn/python" 2> /dev/null | grep "$(cat .python-version)" | tail -1 | cut -f2 -d"v")/bin:$PATH"
-		fi
-
-		if [[ $(ls "$HOME/.vmn/python" 2> /dev/null | grep "$(cat .python-version)" | tail -1) != "" ]]; then
-			echo "Using python version v$(ls "$HOME/.vmn/python" 2> /dev/null | grep "$(cat .python-version)" | tail -1 | cut -f2 -d"v")"
-		fi
-	fi
-}
-
 function cd {
 	builtin cd "$@"
 	setNodeVersion
-	setPythonVersion
 }
 
 setNodeVersion
-setPythonVersion
 	`)
 }
 
@@ -121,24 +96,6 @@ func RunShellSpecificCommands(args []string) {
 				f.Truncate(0)
 				f.Seek(0, 0)
 				f.WriteString(utils.GetDestination(installedNodeVersions[0], "node"))
-			}
-		}
-
-	}
-
-	if _, err := os.Stat(filepath.Join(utils.GetHome(), ".vmn", "python-version")); os.IsNotExist(err) {
-		f, err := os.OpenFile(filepath.Join(utils.GetHome(), ".vmn", "python-version"), os.O_RDWR|os.O_CREATE, 0755)
-		if err != nil {
-			panic(err)
-		}
-
-		defer f.Close()
-		installedPythonVersions := python.GetInstalledVersions()
-		if len(installedPythonVersions) > 0 {
-			if _, err := f.Stat(); err == nil {
-				f.Truncate(0)
-				f.Seek(0, 0)
-				f.WriteString(utils.GetDestination(python.GetInstalledVersions()[0], "python"))
 			}
 		}
 
