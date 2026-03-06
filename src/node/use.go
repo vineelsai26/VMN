@@ -37,7 +37,7 @@ func useVersion(version string) (string, error) {
 	if _, err := os.Stat(path); err == nil {
 		setup.SetPath(path)
 	} else {
-		return "", fmt.Errorf("Node.js version " + version + " is not installed")
+		return "", fmt.Errorf("Node.js version %s is not installed", version)
 	}
 
 	return version, nil

@@ -11,7 +11,15 @@ import (
 )
 
 func getDownloadURL(version string) (string, error) {
-	if runtime.GOOS == "linux" {
+	if runtime.GOOS == "windows" {
+		if runtime.GOARCH == "amd64" {
+			return "https://nodejs.org/dist/" + version + "/node-" + version + "-win-x64.zip", nil
+		} else if runtime.GOARCH == "386" {
+			return "https://nodejs.org/dist/" + version + "/node-" + version + "-win-x86.zip", nil
+		} else {
+			return "", fmt.Errorf("unsupported os or architecture")
+		}
+	} else if runtime.GOOS == "linux" {
 		if runtime.GOARCH == "amd64" {
 			return "https://nodejs.org/dist/" + version + "/node-" + version + "-linux-x64.tar.gz", nil
 		} else if runtime.GOARCH == "386" {
