@@ -12,9 +12,10 @@ env:
 
 jobs:
   build:
+    name: Build (${{ matrix.os }})
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
@@ -25,12 +26,27 @@ jobs:
           go-version: ${{ env.GoVersion }}
 
       - name: Build
-        run: go build -v ./...
+        shell: pwsh
+        run: |
+          go build -v ./... 2>&1 | Tee-Object -FilePath build-${{ matrix.os }}.log
+          if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+          }
+
+      - name: Upload build log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log-${{ matrix.os }}
+          path: build-${{ matrix.os }}.log
+          if-no-files-found: ignore
+          retention-days: 14
 
   test:
+    name: Test (${{ matrix.os }})
     strategy:
       matrix:
-        os: [ macos-latest, ubuntu-latest ]
+        os: [macos-latest, ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     needs: build
     steps:
@@ -42,7 +58,21 @@ jobs:
           go-version: ${{ env.GoVersion }}
 
       - name: Test
-        run: go test -timeout 3h -v ./...
+        shell: pwsh
+        run: |
+          go test -timeout 3h -v ./... 2>&1 | Tee-Object -FilePath test-${{ matrix.os }}.log
+          if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+          }
+
+      - name: Upload test log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-log-${{ matrix.os }}
+          path: test-${{ matrix.os }}.log
+          if-no-files-found: ignore
+          retention-days: 14
 
   release:
     name: "Tagged Release"
@@ -110,4 +140,3 @@ jobs:
             *.tar.gz
             *.zip
             *.deb
-
