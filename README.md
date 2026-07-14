@@ -56,6 +56,11 @@ sudo mv vmn /usr/local/bin
 vmn install 20
 ```
 
+VMN downloads Node.js over HTTPS, verifies the release `SHASUMS256.txt` against
+the official Node.js release-key set, then verifies the selected archive's
+SHA-256 checksum before extraction. Failed signature, redirect, or checksum
+validation aborts installation and does not publish a partial archive.
+
 ### Use a Node.js version
 
 ```bash
